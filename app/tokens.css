@@ -1,0 +1,439 @@
+/* ==========================================================================
+   Design tokens — "Lumina": a light, mirror-finish system.
+   Palette is warm-neutral paper + ink, with a single cold chrome accent.
+   Every surface is either paper, glass, or chrome. Nothing else.
+   ========================================================================== */
+
+:root {
+  /* Paper — warm off-white, never pure #fff for large fields */
+  --paper-0: #fcfcfa;
+  --paper-1: #f6f5f2;
+  --paper-2: #efeee9;
+  --paper-3: #e6e4dd;
+
+  /* Ink — near-black with a cool cast so it sits well on warm paper */
+  --ink-0: #0b0c0e;
+  --ink-1: #16181d;
+  --ink-2: #3a3d45;
+  --ink-3: #6b6f7a;
+  --ink-4: #9a9da6;
+
+  /* Chrome — the mirror accent. Cool, metallic, used sparingly. */
+  --chrome-1: #cfd6e2;
+  --chrome-2: #a8b3c6;
+  --chrome-3: #7d8aa3;
+  --chrome-4: #5b6780;
+
+  /* Secondary accents — desaturated, each locked to one project */
+  --sky: #7fa6c9;
+  --sage: #8fae9b;
+  --sand: #c9b489;
+  --lilac: #a99bc4;
+  --rose: #c99a9a;
+
+  /* Hairlines */
+  --line-1: rgba(11, 12, 14, 0.08);
+  --line-2: rgba(11, 12, 14, 0.14);
+  --line-3: rgba(11, 12, 14, 0.26);
+
+  /* Radii */
+  --r-xs: 6px;
+  --r-sm: 10px;
+  --r-md: 18px;
+  --r-lg: 28px;
+  --r-xl: 40px;
+  --r-full: 999px;
+
+  /* Shadow — soft, warm, low contrast. Mirror surfaces get light, not dark. */
+  --shadow-1: 0 1px 2px rgba(20, 22, 28, 0.04), 0 8px 24px -12px rgba(20, 22, 28, 0.12);
+  --shadow-2: 0 1px 2px rgba(20, 22, 28, 0.05), 0 18px 48px -20px rgba(20, 22, 28, 0.22);
+  --shadow-3: 0 2px 4px rgba(20, 22, 28, 0.05), 0 40px 90px -40px rgba(20, 22, 28, 0.35);
+
+  /* Layout */
+  --gutter: clamp(20px, 5vw, 64px);
+  --max: 1280px;
+  --nav-h: 68px;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-1: 180ms;
+  --dur-2: 320ms;
+  --dur-3: 640ms;
+  --dur-4: 1100ms;
+
+  /* Type families (set by next/font in layout.tsx) */
+  --font-display: "Instrument Serif", Georgia, "Times New Roman", serif;
+  --font-sans: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--paper-1);
+  color: var(--ink-1);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+html {
+  scroll-behavior: smooth;
+  /* Avoid layout jump when the mobile menu locks scroll */
+  scrollbar-gutter: stable;
+  /* Anchors must clear the fixed header, or a jump lands with the section
+     title hidden underneath it. */
+  scroll-padding-top: calc(var(--nav-h) + 18px);
+}
+
+section[id] {
+  scroll-margin-top: calc(var(--nav-h) + 18px);
+}
+
+body {
+  /* Prevent horizontal bleed from wide decorative fields on small screens */
+  overflow-x: hidden;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+::selection {
+  background: var(--ink-0);
+  color: var(--paper-0);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+img,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  margin: 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--ink-0);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ── Layout primitives ─────────────────────────────────────────────── */
+
+.wrap {
+  width: 100%;
+  max-width: var(--max);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.section {
+  position: relative;
+  padding-block: clamp(72px, 11vw, 148px);
+}
+
+.hairline {
+  height: 1px;
+  width: 100%;
+  background: var(--line-1);
+}
+
+/* ── Type scale ───────────────────────────────────────────────────── */
+
+.display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 0.94;
+}
+
+.h1 {
+  font-size: clamp(44px, 7.4vw, 112px);
+}
+
+.h2 {
+  font-size: clamp(34px, 4.6vw, 66px);
+  letter-spacing: -0.028em;
+  line-height: 1.02;
+  /* Display faces with italic descenders need explicit clearance, or a 'p'
+     grazes the copy beneath. */
+  padding-bottom: 0.05em;
+}
+
+.h3 {
+  font-family: var(--font-sans);
+  font-size: clamp(19px, 2vw, 24px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
+.lede {
+  font-size: clamp(16px, 1.35vw, 19px);
+  line-height: 1.62;
+  color: var(--ink-2);
+  max-width: 62ch;
+}
+
+.body {
+  font-size: 15.5px;
+  line-height: 1.68;
+  color: var(--ink-3);
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.eyebrow::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--ink-3);
+  flex: none;
+}
+
+/* ── Mirror / glass surfaces ──────────────────────────────────────── */
+
+/* The core mirror: reflective top edge, cool inner glow, crisp rim.
+   Reads as polished glass over paper without going dark. */
+.mirror {
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0.62) 42%, rgba(244, 245, 248, 0.52) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    inset 0 -1px 0 rgba(11, 12, 14, 0.045),
+    inset 0 22px 44px -30px rgba(91, 103, 128, 0.5),
+    var(--shadow-2);
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+}
+
+/* A specular sweep that travels across a mirror surface on hover/scroll. */
+.mirror::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    100deg,
+    transparent 32%,
+    rgba(255, 255, 255, 0.55) 46%,
+    rgba(255, 255, 255, 0.12) 52%,
+    transparent 66%
+  );
+  background-size: 260% 100%;
+  background-position: 180% 0;
+  opacity: 0;
+  transition: background-position 1.1s var(--ease-out), opacity var(--dur-2) ease;
+}
+
+.mirror:hover::after,
+.mirror.sheen::after {
+  opacity: 1;
+  background-position: -60% 0;
+}
+
+/* Chrome text — a mirror finish for a single word. */
+.chrome-text {
+  background: linear-gradient(
+    178deg,
+    #ffffff 2%,
+    #dfe5ee 18%,
+    #ffffff 32%,
+    #b9c3d3 50%,
+    #ffffff 62%,
+    #cdd6e3 78%,
+    #8e9bb0 96%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.9)) drop-shadow(0 6px 14px rgba(91, 103, 128, 0.28));
+}
+
+/* Paper grain — subtle, killed when the user asks for less motion. */
+.grain::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.32;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.30'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+}
+
+/* ── Buttons ──────────────────────────────────────────────────────── */
+
+.btn {
+  --btn-bg: var(--ink-0);
+  --btn-fg: var(--paper-0);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 46px;
+  padding-inline: 22px;
+  border-radius: var(--r-full);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  transition: transform var(--dur-2) var(--ease-out), box-shadow var(--dur-2) var(--ease-out),
+    background var(--dur-2) ease;
+  box-shadow: 0 1px 2px rgba(11, 12, 14, 0.16), 0 10px 24px -14px rgba(11, 12, 14, 0.5);
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(11, 12, 14, 0.16), 0 18px 34px -18px rgba(11, 12, 14, 0.55);
+}
+
+.btn:active {
+  transform: translateY(0) scale(0.99);
+}
+
+.btn .btn-arrow {
+  transition: transform var(--dur-2) var(--ease-out);
+}
+
+.btn:hover .btn-arrow {
+  transform: translateX(3px);
+}
+
+.btn-ghost {
+  --btn-bg: transparent;
+  --btn-fg: var(--ink-1);
+  border: 1px solid var(--line-2);
+  box-shadow: none;
+  backdrop-filter: blur(8px);
+}
+
+.btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.7);
+  border-color: var(--line-3);
+  box-shadow: var(--shadow-1);
+}
+
+.btn-sm {
+  height: 38px;
+  padding-inline: 16px;
+  font-size: 13px;
+}
+
+/* Link with a wiping underline */
+.link-wipe {
+  position: relative;
+  display: inline-block;
+}
+
+.link-wipe::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  height: 1px;
+  width: 100%;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform var(--dur-2) var(--ease-out);
+}
+
+.link-wipe:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* ── Reveal (IntersectionObserver adds .is-in) ────────────────────── */
+
+[data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, 22px, 0);
+  transition: opacity 900ms var(--ease-out), transform 900ms var(--ease-out);
+  will-change: opacity, transform;
+}
+
+[data-reveal].is-in {
+  opacity: 1;
+  transform: none;
+}
+
+[data-reveal-delay="1"] { transition-delay: 80ms; }
+[data-reveal-delay="2"] { transition-delay: 160ms; }
+[data-reveal-delay="3"] { transition-delay: 240ms; }
+[data-reveal-delay="4"] { transition-delay: 320ms; }
+[data-reveal-delay="5"] { transition-delay: 400ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+  .grain::before {
+    display: none;
+  }
+}
