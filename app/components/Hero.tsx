@@ -68,8 +68,10 @@ export default function Hero() {
               <span className="reveal-word">{hero.lineOne}</span>
             </span>
             <span className="hero-line hero-line-mirror">
-              <span className="reveal-word">{hero.mirror} </span>
-              {/* The chrome word and its reflection — the only metal in the type. */}
+              {/* The chrome word and its reflection — the only metal in the type.
+                  The leading word is its own span with a real space after it, so
+                  "into" and "clean" never fuse into one token. */}
+              <span className="reveal-word hero-mirror-lead">{hero.mirror}</span>
               <MirrorText text="clean" className="hero-mirror" />
             </span>
             <span className="hero-line">

@@ -465,6 +465,21 @@
   }
 }
 
+/* The CTAs must never sit on top of the mirror plate: the plate is the hero
+   object, and buttons crossing it read as a UI bug. Below 1100px the object goes
+   behind the type anyway, so the row only needs clearing on desktop. */
+@media (min-width: 1100px) {
+  .hero-foot {
+    margin-top: 8px;
+  }
+  .hero-stack-slot {
+    /* Reserve the plate's height *plus* the caption line, so the footer row
+       (lede + CTAs) always starts below the object — measured, not guessed:
+       the plate is 470px tall and its caption sits 3% under it. */
+    min-height: calc(clamp(380px, 56vh, 470px) + 34px);
+  }
+}
+
 @media (max-width: 1099px) {
   .hero-stack-slot {
     position: absolute;
@@ -2522,9 +2537,12 @@
   .hero-stack-slot {
     display: block;
     position: relative;
-    height: clamp(360px, 30vw, 440px);
-    margin-top: -84px;
-    margin-bottom: -18px;
+    /* The slot is the plate's real box. It previously had `-84px` top margin and
+       a height 38px shorter than the plate, so the mirror hung out of its own
+       grid cell and the CTAs landed on top of it. */
+    height: clamp(380px, 56vh, 470px);
+    margin-top: 0;
+    margin-bottom: 6px;
     overflow: visible;
   }
   .hero-foot {

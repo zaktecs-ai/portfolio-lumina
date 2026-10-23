@@ -68,7 +68,7 @@ async def main():
         fails = 0
         for w, h in WIDTHS:
             pg = await b.new_page(viewport={"width": w, "height": h})
-            await pg.goto(URL, wait_until="networkidle")
+            await pg.goto(URL, wait_until="load")
             await pg.wait_for_timeout(900)
             # scroll through so lazy images and reveals resolve
             total = await pg.evaluate("document.documentElement.scrollHeight")

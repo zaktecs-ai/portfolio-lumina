@@ -9,7 +9,7 @@ no page builder. Next.js 16 (App Router), hand-written CSS, self-hosted fonts.
 
 ## What this is
 
-Five production data projects, presented as evidence rather than decoration — each card
+Twelve production projects (six real build screenshots, six open-source builds), presented as evidence rather than decoration — each card
 opens a case study with the brief, the method, the numbers and downloadable proof
 (sample CSV, case-study PDF, or a recording of the run).
 
@@ -91,3 +91,21 @@ which are downloadable inside each case study.
 
 Personal portfolio — all rights reserved. The code is here for reference; the content,
 images and datasets are not for reuse.
+
+---
+
+## Asset provenance (important)
+
+Every image inside a case study now belongs to *that* project. The earlier build had
+screenshots for one project wired into another project's card, which is the fastest way
+to lose a client's trust.
+
+- `aliexpress/`, `daraz/`, `funda/`, `b2b/`, `us-healthcare/`, `medical/` — real build
+  screenshots copied from the original project folders, each file verified against its
+  own window title / domain before it was placed.
+- `banner-*/cover.webp` — for the five repos that ship **no** screenshots, a single
+  topic banner is used, chosen from a free-licence photo library and cropped to 1800×900.
+  These cards have one shot each, not a fake gallery.
+- `gh/every-site-*.jpg` — the repo's own README images.
+
+Do not add a screenshot to a project unless you can point at the file it came from.

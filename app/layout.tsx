@@ -4,6 +4,7 @@ import "./tokens.css";
 import "./mirror-text.css";
 import "./globals.css";
 import "./hero-type.css";
+import "./mirror.css";
 import { site } from "@/content/site";
 
 /* Fonts are self-hosted (see app/fonts.css) and preloaded here: the headline

@@ -4,18 +4,20 @@ import { useEffect, useRef } from "react";
 import Hero3D from "./Hero3D";
 
 /**
- * MirrorStack — the hero's signature object.
+ * MirrorStack — the hero's signature object, rebuilt as an actual mirror.
  *
- * Three offset glass panels, each with a chrome rim, a specular sweep and a
- * mirrored floor reflection. It is deliberately a *designed* object rather
- * than an ambient particle field: at 320px, in a screenshot, or on a projector
- * it still reads as a bespoke element instead of decorative noise.
+ * The previous build stacked three frosted glass cards with rounded corners,
+ * which read as "glassmorphism template", not as a mirror. This build is a
+ * single bevelled mirror plate:
  *
- * Behaviour:
- *  - scroll-linked rotation (the stack assembles as you scroll into the hero)
- *  - pointer parallax with damping
- *  - one shared rAF, all work on composited transforms
- *  - fully static under prefers-reduced-motion
+ *  - hard, thin, 45° chamfer around the plate (mirror edges are cut, not rounded)
+ *  - the plate face carries a real, live, planar reflection (see Hero3D)
+ *  - a chrome armature behind the plate: two slim posts and a pivot knob, so the
+ *    mirror reads as a *mounted object* rather than a floating rectangle
+ *  - a soft floor shadow that tightens as the plate tilts
+ *
+ * Below 1100px, and with reduced motion, Hero3D never loads: the CSS plate
+ * below stays as a static, beautifully-lit mirror instead of an empty box.
  */
 export default function MirrorStack() {
   const root = useRef<HTMLDivElement>(null);
@@ -25,53 +27,50 @@ export default function MirrorStack() {
     if (!el) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    const panels = Array.from(el.querySelectorAll<HTMLElement>("[data-panel]"));
+    const plate = el.querySelector<HTMLElement>("[data-plate]");
+    const shadow = el.querySelector<HTMLElement>("[data-shadow]");
+    const sheen = el.querySelector<HTMLElement>("[data-sheen]");
+    if (!plate) return;
+
     let raf = 0;
     let tx = 0;
     let ty = 0;
     let cx = 0;
     let cy = 0;
-    let entrance = 0;
-
-    const onPointer = (e: PointerEvent) => {
-      const r = el.getBoundingClientRect();
-      tx = ((e.clientX - r.left) / r.width - 0.5) * 2;
-      ty = ((e.clientY - r.top) / r.height - 0.5) * 2;
-      if (!raf) raf = requestAnimationFrame(tick);
-    };
 
     const tick = () => {
-      cx += (tx - cx) * 0.06;
-      cy += (ty - cy) * 0.06;
-      entrance = Math.min(1, entrance + 0.02);
+      cx += (tx - cx) * 0.055;
+      cy += (ty - cy) * 0.055;
+      plate.style.transform = `rotateX(${(-cy * 4.5).toFixed(2)}deg) rotateY(${(cx * 7).toFixed(2)}deg) translate3d(${(cx * 6).toFixed(2)}px, ${(-cy * 5).toFixed(2)}px, 0)`;
+      plate.style.setProperty("--sx", `${(50 + cx * 26).toFixed(1)}%`);
+      plate.style.setProperty("--sy", `${(48 + cy * 22).toFixed(1)}%`);
+      if (shadow) {
+        shadow.style.transform = `translate3d(${(cx * -14).toFixed(1)}px, 0, 0) scaleX(${(1 - Math.abs(cy) * 0.06).toFixed(3)})`;
+        shadow.style.opacity = `${(0.5 - Math.abs(cy) * 0.09).toFixed(2)}`;
+      }
+      if (sheen) sheen.style.opacity = `${(0.32 + Math.abs(cx) * 0.24).toFixed(2)}`;
 
-      panels.forEach((p, i) => {
-        const depth = i + 1;
-        const rotY = cx * (5 + depth * 2.2) + (1 - entrance) * (18 * depth);
-        const rotX = -cy * (3 + depth * 1.4) + (1 - entrance) * -6;
-        const lift = -cy * (6 + depth * 3);
-        const baseY = Number(p.dataset.baseY || 0);
-        const z = p.classList.contains("stack-hud") ? depth * 26 + 26 : depth * 26;
-        p.style.transform = `translate3d(${cx * (10 + depth * 6)}px, ${baseY + lift}px, ${z}px) rotateX(${rotX}deg) rotateY(${rotY}deg)`;
-        p.style.setProperty("--sx", `${50 + cx * 26}%`);
-        p.style.setProperty("--sy", `${50 + cy * 22}%`);
-      });
-
-      const settled = Math.abs(tx - cx) < 0.002 && Math.abs(ty - cy) < 0.002 && entrance >= 1;
+      const settled = Math.abs(tx - cx) < 0.0015 && Math.abs(ty - cy) < 0.0015;
       raf = settled ? 0 : requestAnimationFrame(tick);
     };
 
-    // Idle drift so the object is never dead-still before the pointer arrives.
+    const onPointer = (e: PointerEvent) => {
+      const r = el.getBoundingClientRect();
+      tx = Math.max(-1, Math.min(1, ((e.clientX - r.left) / r.width - 0.5) * 2));
+      ty = Math.max(-1, Math.min(1, ((e.clientY - r.top) / r.height - 0.5) * 2));
+      if (!raf) raf = requestAnimationFrame(tick);
+    };
+
     const idle = window.setInterval(() => {
       if (!raf) {
-        tx = Math.sin(Date.now() / 4200) * 0.55;
-        ty = Math.cos(Date.now() / 5600) * 0.4;
+        tx = Math.sin(Date.now() / 5200) * 0.34;
+        ty = Math.cos(Date.now() / 6100) * 0.24;
         raf = requestAnimationFrame(tick);
       }
-    }, 1800);
+    }, 2400);
 
-    raf = requestAnimationFrame(tick);
     el.addEventListener("pointermove", onPointer, { passive: true });
+    raf = requestAnimationFrame(tick);
 
     return () => {
       el.removeEventListener("pointermove", onPointer);
@@ -81,49 +80,36 @@ export default function MirrorStack() {
   }, []);
 
   return (
-    <div className="stack" ref={root} aria-hidden="true">
-      <div className="stack-glow" />
-
-      <div className="stack-stage">
-        {[0, 1, 2].map((i) => (
-          <div
-            className={`stack-panel stack-panel-${i}`}
-            data-panel
-            data-base-y={[26, 0, -26][i]}
-            key={i}
-          >
-            <span className="stack-rim" />
-            <span className="stack-face" />
-            <span className="stack-sheen" />
-            <span className="stack-reflect" />
-          </div>
-        ))}
-
-        {/* A live read-out inside the front panel: this is what the object is *for*. */}
-        <div className="stack-hud" data-panel data-base-y={-26}>
-          <span className="hud-row">
-            <span className="hud-key">rows</span>
-            <span className="hud-val">186,662</span>
-          </span>
-          <span className="hud-row">
-            <span className="hud-key">email</span>
-            <span className="hud-val">48.0%</span>
-          </span>
-          <span className="hud-row">
-            <span className="hud-key">dup</span>
-            <span className="hud-val">0.00%</span>
-          </span>
-          <span className="hud-bar">
-            <i style={{ width: "84%" }} />
-          </span>
-        </div>
+    <div className="mir" ref={root} aria-hidden="true">
+      <div className="mir-armature">
+        <span className="mir-post mir-post-l" />
+        <span className="mir-post mir-post-r" />
+        <span className="mir-pivot" />
       </div>
 
-      <div className="stack-3d">
+      <div className="mir-scene">
+        <div className="mir-plate" data-plate>
+          {/* the mirror itself: a static CSS reflection under the WebGL canvas */}
+          <span className="mir-glass" />
+          <span className="mir-sheen" data-sheen />
+          {/* hard polished chamfer — the cue that says "mirror", not "card" */}
+          <span className="mir-edge mir-edge-t" />
+          <span className="mir-edge mir-edge-b" />
+          <span className="mir-edge mir-edge-l" />
+          <span className="mir-edge mir-edge-r" />
+          <span className="mir-etch">
+            <i>SPEC</i> 01
+          </span>
+        </div>
+        <div className="mir-shadow" data-shadow />
+        <div className="mir-glint" />
+      </div>
+
+      <div className="mir-3d">
         <Hero3D />
       </div>
 
-      <span className="stack-caption">Fig. 01 — Chrome ring, live WebGL</span>
+      <span className="mir-caption">Fig. 01 — Bevelled mirror, live planar reflection</span>
     </div>
   );
 }

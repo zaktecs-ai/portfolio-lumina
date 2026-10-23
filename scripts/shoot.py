@@ -31,7 +31,7 @@ async def audit(width, height, tag, full=True, mobile=False):
         page.on("response", lambda r: report["failed"].append({"url": r.url, "status": r.status}) if r.status >= 400 else None)
 
         t0 = time.time()
-        await page.goto(BASE, wait_until="networkidle", timeout=60000)
+        await page.goto(BASE, wait_until="load", timeout=60000)
         report["load_ms"] = int((time.time() - t0) * 1000)
 
         # settle animations

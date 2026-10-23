@@ -16,13 +16,14 @@
   display: inline-flex;
   flex-direction: column;
   align-items: flex-start;
-  line-height: 0.98;
+  line-height: 1;
 }
 
 /* 1 — the word: chrome ramp, dark enough at its lightest stroke to clear AA. */
 .mirror-text-word {
   position: relative;
   display: block;
+  line-height: 0.96;
   font-style: italic;
   padding-right: 0.03em;
   background-image: radial-gradient(
@@ -73,11 +74,14 @@
 }
 
 /* 2 — the reflection: a flipped copy in normal flow, fading downward.
-   `height: 0.72em` + overflow hidden gives it a fixed, predictable band so the
-   line box is stable and the fade always ends before the next line. */
+   The band is deliberately short (0.3em) and the line-height is pinned to 1 so
+   it never inherits the hero's 0.96 rhythm and adds a phantom half-line — that
+   discrepancy was what opened a 60px hole under the headline line. */
 .mirror-text-flip {
   display: block;
-  height: 0.52em;
+  height: 0.3em;
+  line-height: 1;
+  margin-top: -0.02em;
   overflow: hidden;
   font-style: italic;
   padding-right: 0.03em;
@@ -85,11 +89,11 @@
   transform-origin: center top;
   background-image: linear-gradient(
     0deg,
-    rgba(36, 43, 58, 0.95) 0%,
-    rgba(74, 87, 112, 0.9) 20%,
-    rgba(120, 135, 160, 0.72) 42%,
-    rgba(163, 176, 198, 0.45) 62%,
-    rgba(196, 208, 226, 0.2) 82%,
+    rgba(36, 43, 58, 0.9) 0%,
+    rgba(74, 87, 112, 0.78) 18%,
+    rgba(120, 135, 160, 0.55) 38%,
+    rgba(163, 176, 198, 0.28) 60%,
+    rgba(196, 208, 226, 0.1) 80%,
     rgba(214, 224, 240, 0) 100%
   );
   -webkit-background-clip: text;

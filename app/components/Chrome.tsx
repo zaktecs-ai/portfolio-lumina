@@ -17,8 +17,8 @@ const marqueeTools = [
   "docker",
   "github",
   "linux",
-  "make",
-  "apify",
+  "airtable",
+  "apollo",
 ];
 
 export function Marquee() {
@@ -29,7 +29,7 @@ export function Marquee() {
         {items.map((m, i) => (
           <span className="marquee-item marquee-tool" key={`${m}-${i}`}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={`/icons/tools/${m}.svg`} alt="" width={15} height={15} loading="lazy" decoding="async" />
+            <img src={`/icons/tools/${m}.${["apollo"].includes(m) ? "png" : "svg"}`} alt="" width={15} height={15} loading="lazy" decoding="async" />
           </span>
         ))}
       </div>

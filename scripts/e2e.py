@@ -30,7 +30,7 @@ async def run(width, height, mobile):
         bad = []
         pg.on("pageerror", lambda e: bad.append(f"pageerror:{e}"))
         pg.on("response", lambda r: bad.append(f"{r.status}:{r.url}") if r.status >= 400 else None)
-        await pg.goto(BASE, wait_until="networkidle")
+        await pg.goto(BASE, wait_until="load")
         await pg.wait_for_timeout(1500)
 
         # 1. Anchor links resolve to real sections
@@ -49,7 +49,7 @@ async def run(width, height, mobile):
         rec("faq count", len(faqs) == 5, len(faqs))
         # The first item ships expanded, so a click on it must *close* it.
         for i, q in enumerate(faqs[:3]):
-            await q.scroll_into_view_if_needed()
+            await q.evaluate("e=>e.scrollIntoView({block:'center'})")
             before = await q.get_attribute("aria-expanded")
             await q.click()
             await pg.wait_for_timeout(420)
@@ -65,7 +65,7 @@ async def run(width, height, mobile):
         buttons = await pg.query_selector_all(".work-card .work-actions .btn")
         rec("work action buttons", len(buttons) >= 10, len(buttons))
         cards = await pg.query_selector_all(".work-card")
-        rec("project cards", len(cards) == 8, len(cards))
+        rec("project cards", len(cards) == 12, len(cards))
         for idx in range(len(cards)):
             card = cards[idx]
             await card.scroll_into_view_if_needed()
@@ -103,8 +103,8 @@ async def run(width, height, mobile):
         # Client-work cards (07, 08) carry the PDF/CSV evidence — open those.
         await (await pg.query_selector(".case-close")).click()
         await pg.wait_for_timeout(400)
-        await cards[6].scroll_into_view_if_needed()
-        await (await cards[6].query_selector(".work-actions .btn")).click()
+        await cards[9].scroll_into_view_if_needed()
+        await (await cards[9].query_selector(".work-actions .btn")).click()
         await pg.wait_for_timeout(700)
         docs = await pg.evaluate("""[...document.querySelectorAll('.case-doc')].map(a=>a.getAttribute('href'))""")
         rec("evidence links", len(docs) >= 2, docs)
@@ -164,7 +164,14 @@ async def run(width, height, mobile):
             el = await pg.evaluate("""() => {
               const a = document.activeElement;
               if (!a) return null;
-              return a.tagName + '|' + (a.textContent || a.getAttribute('aria-label') || '').trim().slice(0, 22);
+              /* Include position: twelve project cards all have a "Case study"
+                 button and a "GitHub" link, so text alone collapses to 2 keys. */
+              const sec = a.closest('section')?.id || '';
+              /* Each project card is an <article>: its index is enough to keep
+                 twelve identical buttons distinct. */
+              const art = a.closest('article');
+              const idx = art ? String([...document.querySelectorAll('article')].indexOf(art)) : '';
+              return a.tagName + '|' + (a.textContent || a.getAttribute('aria-label') || '').trim().slice(0, 18) + '|' + sec + idx;
             }""")
             focus_seq.append(el)
             await pg.keyboard.press("Tab")

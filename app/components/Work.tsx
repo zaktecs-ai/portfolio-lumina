@@ -40,7 +40,7 @@ export default function Work() {
           label="Selected work"
           title={
             <>
-              Eight builds, <em style={{ fontStyle: "italic", color: "var(--ink-3)" }}>269k rows</em>.</>
+              Twelve builds, <em style={{ fontStyle: "italic", color: "var(--ink-3)" }}>269k rows</em>.</>
           }
           aside="Open a card for the method, the numbers and the repo."
         />

@@ -32,6 +32,13 @@
   padding-bottom: 0.06em;
 }
 
+/* The word before the chrome word is its own inline box, so it must carry a
+   real word space — otherwise "into" and "clean" fuse into one token. */
+.hero-mirror-lead {
+  display: inline-block;
+  margin-right: 0.26em;
+}
+
 /* ── Light sweep across the entire headline ─────────────────────────
    A single bright band travelling left → right over the whole block, so the
    type reads as one polished surface rather than three separate lines. */
