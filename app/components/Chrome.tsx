@@ -1,24 +1,28 @@
 import { site } from "@/content/site";
+import ContactForm from "./ContactForm";
 
 /* The marquee is a second pass at the toolkit: same real marks, moving.
-   It reinforces "these are the tools" without repeating a single sentence. */
-const marqueeTools = [
-  "python",
-  "playwright",
-  "scrapy",
-  "selenium",
-  "aiohttp",
-  "pandas",
-  "numpy",
-  "jupyter",
-  "googlesheets",
-  "excel",
-  "postgresql",
-  "docker",
-  "github",
-  "linux",
-  "airtable",
-  "apollo",
+   It reinforces "these are the tools" without repeating a single sentence.
+   `ext` is explicit because a few brands (Apollo) only ship raster marks. */
+type MarqueeTool = { id: string; ext: "svg" | "png" };
+
+const marqueeTools: MarqueeTool[] = [
+  { id: "python", ext: "svg" },
+  { id: "playwright", ext: "svg" },
+  { id: "scrapy", ext: "svg" },
+  { id: "selenium", ext: "svg" },
+  { id: "aiohttp", ext: "svg" },
+  { id: "pandas", ext: "svg" },
+  { id: "numpy", ext: "svg" },
+  { id: "jupyter", ext: "svg" },
+  { id: "googlesheets", ext: "svg" },
+  { id: "excel", ext: "svg" },
+  { id: "postgresql", ext: "svg" },
+  { id: "dify", ext: "svg" },
+  { id: "github", ext: "svg" },
+  { id: "linux", ext: "svg" },
+  { id: "airtable", ext: "svg" },
+  { id: "apollo", ext: "png" },
 ];
 
 export function Marquee() {
@@ -27,9 +31,16 @@ export function Marquee() {
     <div className="marquee" aria-hidden="true">
       <div className="marquee-track">
         {items.map((m, i) => (
-          <span className="marquee-item marquee-tool" key={`${m}-${i}`}>
+          <span className="marquee-item marquee-tool" key={`${m.id}-${i}`}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={`/icons/tools/${m}.${["apollo"].includes(m) ? "png" : "svg"}`} alt="" width={15} height={15} loading="lazy" decoding="async" />
+            <img
+              src={`/icons/tools/${m.id}.${m.ext}`}
+              alt=""
+              width={15}
+              height={15}
+              loading="lazy"
+              decoding="async"
+            />
           </span>
         ))}
       </div>
@@ -43,7 +54,7 @@ export function Contact() {
       <div className="wrap">
         <div className="contact-inner" data-reveal>
           <div className="contact-grid">
-            <div>
+            <div className="contact-pitch">
               <p className="eyebrow">06 — Contact</p>
               <h2 className="display h2 contact-title" style={{ marginTop: 14 }}>
                 Send the link. I&apos;ll say if it&apos;s{" "}
@@ -52,26 +63,34 @@ export function Contact() {
               <p className="contact-lede">
                 Tell me the site, the fields and the row count. You&apos;ll get a fixed price or a straight no.
               </p>
-              <div className="contact-actions">
-                <a className="btn" href={`mailto:${site.email}?subject=Data%20project%20enquiry`}>
-                  Email me
-                  <svg className="btn-arrow" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                    <path d="M2.5 7h9M8 3.5 11.5 7 8 10.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </a>
-                <a className="btn btn-ghost" href={site.calendly} target="_blank" rel="noreferrer noopener">
-                  Book 30 minutes
-                </a>
-              </div>
+
+              <ul className="contact-assurances">
+                <li>
+                  <span className="ca-k">Reply</span>
+                  <span className="ca-v">Within one working day</span>
+                </li>
+                <li>
+                  <span className="ca-k">Quote</span>
+                  <span className="ca-v">Fixed price, before any work</span>
+                </li>
+                <li>
+                  <span className="ca-k">Trial</span>
+                  <span className="ca-v">100 rows from one source, free</span>
+                </li>
+              </ul>
+
+              <dl className="contact-side">
+                <ContactRow label="Email" value={site.email} href={`mailto:${site.email}`} />
+                <ContactRow label="WhatsApp" value={site.phone} href={site.whatsapp} />
+                <ContactRow label="LinkedIn" value="/in/zakriashahbaz" href={site.linkedin} />
+                <ContactRow label="GitHub" value="/zaktecs-ai" href={site.github} />
+                <ContactRow label="Location" value="Lahore, PK · GMT+5" />
+              </dl>
             </div>
 
-            <dl className="contact-side">
-              <ContactRow label="Email" value={site.email} href={`mailto:${site.email}`} />
-              <ContactRow label="WhatsApp" value={site.phone} href={site.whatsapp} />
-              <ContactRow label="LinkedIn" value="/in/zakriashahbaz" href={site.linkedin} />
-              <ContactRow label="GitHub" value="/zaktecs-ai" href={site.github} />
-              <ContactRow label="Location" value="Lahore, PK · GMT+5" />
-            </dl>
+            <div className="contact-form-slot">
+              <ContactForm fallbackEmail={site.email} />
+            </div>
           </div>
         </div>
       </div>
@@ -117,6 +136,7 @@ export function Footer() {
             </span>
           </a>
           <nav className="footer-links" aria-label="Footer">
+            <a href="#about">About</a>
             <a href="#about">About</a>
             <a href="#work">Work</a>
             <a href="#stack">Stack</a>

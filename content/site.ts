@@ -3,6 +3,15 @@
  * no sentence repeated, nothing padded.
  */
 
+/* The canonical origin. It has to be configurable: the build-time default is the
+   production domain, but a preview deploy (or a tunnel) must advertise its own
+   host or every share card points at a page the crawler cannot reach. */
+const env = (globalThis as { process?: { env?: Record<string, string | undefined> } }).process?.env || {};
+export const canonicalUrl = (
+  env.NEXT_PUBLIC_SITE_URL ||
+  (env.VERCEL_URL ? `https://${env.VERCEL_URL}` : "https://zaktecs.dev")
+).replace(/\/+$/, "");
+
 export const site = {
   name: "Muhammad Zakria",
   role: "Web Scraper · Data Analyst",
@@ -15,7 +24,7 @@ export const site = {
   calendly: "https://calendly.com/zakriashahbaz/30min",
   github: "https://github.com/zaktecs-ai",
   linkedin: "https://linkedin.com/in/zakriashahbaz",
-  siteUrl: "https://zaktecs.dev",
+  siteUrl: canonicalUrl,
   availability: "Available for work",
   availabilityShort: "Available",
   profile: "/img/avatar-512.webp",
@@ -558,7 +567,6 @@ export const tools: Tool[] = [
 
   { name: "Google Sheets", src: "/icons/tools/googlesheets.svg", color: "#34A853", group: "Delivery" },
   { name: "Excel", src: "/icons/tools/excel.svg", color: "#217346", group: "Delivery" },
-  { name: "Apps Script", src: "/icons/tools/googleappsscript.svg", color: "#4285F4", group: "Delivery" },
   { name: "Google Drive", src: "/icons/tools/googledrive.svg", color: "#4285F4", group: "Delivery" },
   { name: "Airtable", src: "/icons/tools/airtable.svg", color: "#18BFFF", group: "Delivery" },
   { name: "Notion", src: "/icons/tools/notion.svg", color: "#111111", group: "Delivery" },
@@ -573,10 +581,10 @@ export const tools: Tool[] = [
   { name: "SearchLeads", src: "/icons/tools/searchleads.png", color: "#F59E0B", group: "Lead data" },
   { name: "NeverBounce", src: "/icons/tools/neverbounce.png", color: "#0F9BD7", group: "Lead data" },
 
+  { name: "Dify", src: "/icons/tools/dify.svg", color: "#0033FF", group: "Automation" },
   { name: "Linux", src: "/icons/tools/linux.svg", color: "#FCC624", group: "Automation" },
   { name: "Git", src: "/icons/tools/git.svg", color: "#F05032", group: "Automation" },
   { name: "GitHub", src: "/icons/tools/github.svg", color: "#181717", group: "Automation" },
-  { name: "Docker", src: "/icons/tools/docker.svg", color: "#2496ED", group: "Automation" },
   { name: "DigitalOcean", src: "/icons/tools/digitalocean.svg", color: "#0080FF", group: "Automation" },
 ];
 

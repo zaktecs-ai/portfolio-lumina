@@ -1,0 +1,379 @@
+/* ==========================================================================
+   Contact form — the last thing a visitor sees, so it has to look like the
+   rest of the page and behave like a real product form.
+   Appended after globals.css so it composes with .contact-* rules.
+   ========================================================================== */
+
+.contact-grid {
+  grid-template-columns: 1fr;
+  gap: clamp(28px, 4vw, 60px);
+}
+
+@media (min-width: 1000px) {
+  .contact-grid {
+    /* The pitch column is a fixed measure; the form gets the rest. */
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
+    gap: clamp(32px, 4vw, 68px);
+  }
+}
+
+/* ── Left column: pitch, assurances, contact rows ─────────────────── */
+
+.contact-assurances {
+  list-style: none;
+  margin: 26px 0 26px;
+  padding: 0;
+  display: grid;
+  gap: 0;
+  border-top: 1px solid var(--line-1);
+}
+
+.contact-assurances li {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line-1);
+}
+
+.ca-k {
+  flex: none;
+  width: 64px;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+}
+
+.ca-v {
+  font-size: 13.5px;
+  color: var(--ink-1);
+}
+
+/* ── The form card ────────────────────────────────────────────────── */
+
+.cf {
+  position: relative;
+  display: grid;
+  gap: 14px;
+  padding: clamp(18px, 2.4vw, 28px);
+  border-radius: var(--r-lg);
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: inset 0 1px 0 #fff, 0 1px 2px rgba(20, 22, 28, 0.04), 0 28px 60px -34px rgba(20, 22, 28, 0.34);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+}
+
+.cf-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line-1);
+}
+
+.cf-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.cf-count {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  color: var(--ink-4);
+  font-variant-numeric: tabular-nums;
+  transition: color var(--dur-1) ease;
+}
+
+/* Turns into a plain "Ready" the moment the brief is long enough, so the
+   counter rewards progress instead of tracking a chore. */
+.cf-count[data-ok="true"] {
+  color: #1f6b4a;
+}
+
+.cf-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+@media (min-width: 620px) {
+  .cf-row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.cf-field {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.cf-full {
+  grid-column: 1 / -1;
+}
+
+.cf-field label {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.cf-opt {
+  font-family: var(--font-sans);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  text-transform: none;
+  color: var(--ink-4);
+}
+
+.cf-field input,
+.cf-field textarea,
+.cf-field select {
+  width: 100%;
+  font: inherit;
+  font-size: 14px;
+  color: var(--ink-0);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-sm);
+  padding: 11px 13px;
+  transition: border-color var(--dur-1) ease, box-shadow var(--dur-2) var(--ease-out), background var(--dur-1) ease;
+  appearance: none;
+}
+
+.cf-field textarea {
+  resize: vertical;
+  min-height: 118px;
+  line-height: 1.6;
+}
+
+.cf-field input::placeholder,
+.cf-field textarea::placeholder {
+  color: var(--ink-4);
+  opacity: 0.85;
+}
+
+.cf-field input:hover,
+.cf-field textarea:hover,
+.cf-field select:hover {
+  border-color: var(--line-3);
+}
+
+.cf-field input:focus,
+.cf-field textarea:focus,
+.cf-field select:focus {
+  outline: none;
+  border-color: var(--ink-2);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(11, 12, 14, 0.09);
+}
+
+/* Invalid: a warm red edge, never a red fill — the text stays readable. */
+.cf-field input[aria-invalid="true"],
+.cf-field textarea[aria-invalid="true"] {
+  border-color: #c2564e;
+  box-shadow: 0 0 0 3px rgba(194, 86, 78, 0.12);
+}
+
+.cf-field input:disabled,
+.cf-field textarea:disabled,
+.cf-field select:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.cf-select-wrap {
+  position: relative;
+}
+
+.cf-select-wrap select {
+  padding-right: 34px;
+  cursor: pointer;
+}
+
+.cf-chev {
+  position: absolute;
+  right: 13px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--ink-3);
+  pointer-events: none;
+}
+
+.cf-err {
+  font-size: 11.5px;
+  color: #a8443c;
+  letter-spacing: 0.01em;
+}
+
+.cf-hint {
+  font-size: 11.5px;
+  color: var(--ink-4);
+}
+
+/* Honeypot is parked off-canvas: present in the DOM for bots, absent for
+   screen readers and keyboard users. */
+.cf-honey {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.cf-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  margin-top: 4px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line-1);
+}
+
+.cf-submit {
+  min-width: 190px;
+  justify-content: center;
+}
+
+.cf-submit[disabled] {
+  opacity: 0.78;
+  cursor: progress;
+}
+
+.cf-spin {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  border: 1.6px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #fff;
+  animation: cfSpin 0.7s linear infinite;
+}
+
+@keyframes cfSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.cf-alt {
+  font-size: 12.5px;
+  color: var(--ink-3);
+  margin: 0;
+}
+
+.cf-alt a {
+  color: var(--ink-1);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-color: var(--line-3);
+}
+
+.cf-alt a:hover {
+  text-decoration-color: var(--ink-2);
+}
+
+.cf-note {
+  margin: 0;
+  min-height: 16px;
+  font-size: 12px;
+  color: var(--ink-3);
+}
+
+.cf-note a {
+  color: #a8443c;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ── Success panel ────────────────────────────────────────────────── */
+
+.cf-done {
+  display: grid;
+  gap: 12px;
+  padding: clamp(22px, 3vw, 34px);
+  border-radius: var(--r-lg);
+  background:
+    radial-gradient(120% 120% at 80% -10%, rgba(255, 255, 255, 0.95), rgba(233, 240, 236, 0.7) 60%, rgba(246, 245, 242, 0.9) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: inset 0 1px 0 #fff, 0 28px 60px -34px rgba(20, 22, 28, 0.3);
+  animation: cfDone 0.5s var(--ease-out) both;
+}
+
+@keyframes cfDone {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+.cf-done-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: #1f6b4a;
+  background: rgba(31, 107, 74, 0.1);
+  border: 1px solid rgba(31, 107, 74, 0.2);
+}
+
+.cf-done h3 {
+  margin: 2px 0 0;
+  font-family: var(--font-display);
+  font-size: clamp(22px, 2.4vw, 28px);
+  font-weight: 400;
+  color: var(--ink-0);
+}
+
+.cf-done p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.68;
+  color: var(--ink-2);
+  max-width: 46ch;
+}
+
+.cf-again {
+  justify-self: start;
+  margin-top: 4px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  background: none;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-full);
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: border-color var(--dur-1) ease, color var(--dur-1) ease;
+}
+
+.cf-again:hover {
+  border-color: var(--ink-2);
+  color: var(--ink-0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cf-done {
+    animation: none;
+  }
+  .cf-spin {
+    animation-duration: 2s;
+  }
+}

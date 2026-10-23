@@ -229,6 +229,28 @@ async def run(width, height, mobile):
         rec("skip link exists", skip is not None)
 
         # 11. No console errors
+        # 12. Contact form: fields exist, validation fires, honeypot is hidden
+        for sel in ["#cf-name", "#cf-email", "#cf-message", "#cf-budget"]:
+            rec(f"contact field {sel}", await pg.query_selector(sel) is not None)
+        await pg.evaluate("document.querySelector('.contact-form-slot').scrollIntoView({block:'center'})")
+        await pg.wait_for_timeout(400)
+        await pg.fill("#cf-name", "A")
+        await pg.fill("#cf-email", "nope")
+        await pg.fill("#cf-message", "short")
+        await pg.click(".cf-submit")
+        await pg.wait_for_timeout(700)
+        errs = await pg.evaluate("document.querySelectorAll('.cf-err').length")
+        rec("contact validation errors", errs >= 3, errs)
+        invalid = await pg.evaluate('document.querySelectorAll("[aria-invalid=true]").length')
+        rec("contact aria-invalid set", invalid >= 3, invalid)
+        focusable = await pg.evaluate("""() => {
+          const h = document.querySelector('#cf-website');
+          return h ? h.tabIndex : 999;
+        }""")
+        rec("honeypot not focusable", focusable == -1, focusable)
+        # submit button must not be a dead end
+        rec("contact fallback mailto", (await pg.evaluate("""!!document.querySelector('.cf-alt a[href^="mailto:"]')""")) is True)
+
         rec("no runtime errors", len(bad) == 0, bad[:4])
 
         await b.close()

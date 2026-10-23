@@ -97,9 +97,11 @@ export default async function OpengraphImage() {
                 color: "transparent",
               }}
             >
-              clean
+              clean,
             </span>
-            <span>, verified data.</span>
+            {/* No leading space here: the flex `gap` above already separates the
+                items, and `" ,"` rendered as an odd floater before the comma. */}
+            <span>verified data.</span>
           </span>
         </div>
 
