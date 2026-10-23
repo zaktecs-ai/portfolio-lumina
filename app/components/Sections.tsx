@@ -1,6 +1,7 @@
 import Image from "next/image";
-import { capabilities, toolkit, process, site, experience } from "@/content/site";
+import { capabilities, tools, process, site, experience } from "@/content/site";
 import Faq from "./Faq";
+import ToolTiles from "./ToolTiles";
 
 /* ── Section header ───────────────────────────────────────────────── */
 
@@ -47,11 +48,9 @@ export function About() {
           label="About"
           title={
             <>
-              Built for the <em style={{ fontStyle: "italic", color: "var(--ink-3)" }}>messy</em> part of
-              the web.
+              I get data out of the web, and make it <em style={{ fontStyle: "italic", color: "var(--ink-3)" }}>usable</em>.
             </>
           }
-          aside="Most scraping projects die on contact with reality: a bot wall, a layout change, a run that never finished. I build for that moment."
         />
 
         <div className="about-grid">
@@ -77,45 +76,39 @@ export function About() {
           </figure>
 
           <div className="about-copy">
-            <p data-reveal data-reveal-delay="1">
-              I&apos;m Zakria, a Python engineer based in Lahore. For the past year I&apos;ve built the unglamorous half
-              of data work: <strong>getting the data out</strong> — from Google Maps, Dutch property portals, e-commerce
-              marketplaces and business websites — and then making it clean enough that someone can actually act on it.
+            <p className="about-lede" data-reveal data-reveal-delay="1">
+              I&apos;m Zakria, a web scraper and data analyst in Lahore. I take data that is stuck inside websites
+              — marketplaces, maps, business directories — and turn it into clean spreadsheets your team can
+              actually work from. Roughly 269,000 records delivered so far, across real estate, e-commerce and
+              B2B lead generation.
             </p>
 
-            <p className="pull" data-reveal data-reveal-delay="2">
-              &ldquo;Understand the source, handle the edge cases, hand over something the client can use.&rdquo;
+            <p className="about-mid" data-reveal data-reveal-delay="2">
+              Most of the work is white-label, so you may never see my name on it: an agency gets the file, their
+              client gets a clean list, and the pipeline keeps refreshing it on a schedule.
             </p>
 
-            <p data-reveal data-reveal-delay="2">
-              Most of my work is white-label for agencies: the pipeline runs on a self-managed Linux VPS with cron
-              schedules, checkpoint recovery and email verification wired in, and the deliverable lands in the client&apos;s
-              Google Sheet or database without anyone copying and pasting.
-            </p>
+            <ul className="about-points">
+              <li data-reveal data-reveal-delay="2">
+                <b>Scrape</b>
+                <span>JavaScript-heavy sites, logins, pagination, anti-bot. Playwright, Scrapy, Selenium.</span>
+              </li>
+              <li data-reveal data-reveal-delay="2">
+                <b>Clean</b>
+                <span>Dedupe, normalise, verify emails, score quality — in Pandas, before anything is delivered.</span>
+              </li>
+              <li data-reveal data-reveal-delay="3">
+                <b>Automate</b>
+                <span>Scheduled runs on a Linux server that refresh your Google Sheet or database on their own.</span>
+              </li>
+            </ul>
 
-            <p data-reveal data-reveal-delay="3">
-              Before freelancing I scraped and cleaned data at ITEH Limited and reported on workforce data at TEVTA
-              Punjab — which is where the habit of <strong>checking the numbers before shipping them</strong> came from.
+            <p className="about-close" data-reveal data-reveal-delay="3">
+              I also run the boring part properly: retries, checkpoints, logging and a run report, so nobody has to
+              babysit a job at 2am. Before going independent I scraped and cleaned data at ITEH Limited and reported
+              on workforce data at TEVTA Punjab — which is where the habit came from: check the numbers before
+              shipping them.
             </p>
-
-            <dl className="about-facts" data-reveal data-reveal-delay="3">
-              <div className="fact">
-                <dt>Based in</dt>
-                <dd>Lahore, Pakistan</dd>
-              </div>
-              <div className="fact">
-                <dt>Working hours</dt>
-                <dd>PKT · overlaps EU &amp; US-East</dd>
-              </div>
-              <div className="fact">
-                <dt>Engagement</dt>
-                <dd>Fixed-scope &amp; retainer</dd>
-              </div>
-              <div className="fact">
-                <dt>Languages</dt>
-                <dd>English, Urdu</dd>
-              </div>
-            </dl>
           </div>
         </div>
       </div>
@@ -165,7 +158,7 @@ export function Capabilities() {
 
         <div className="caps">
           {capabilities.map((c, i) => (
-            <article className="cap mirror" key={c.id} data-reveal data-reveal-delay={String(i + 1)}>
+            <article className="cap mirror" key={c.id} data-reveal data-reveal-delay={String(i + 1)} data-tilt>
               <div className="cap-top">
                 <span className="cap-index">{c.index}</span>
                 <span className="cap-glyph" aria-hidden="true">
@@ -237,22 +230,11 @@ export function Toolkit() {
         <SecHead
           index="05"
           label="Toolkit"
-          title="What's actually on the machine."
-          aside="Grouped by the job each one does. No logos for tools I've read about — only what I've shipped with."
+          title="The stack I actually run."
+          aside="Real tools, grouped by the job each one does. Filter it — or hover a tile to see it lift."
         />
-        <div className="tool-grid" data-reveal>
-          {toolkit.map((g) => (
-            <div className="tool-cell" key={g.title}>
-              <h4>{g.title}</h4>
-              <div className="tool-chips">
-                {g.items.map((t) => (
-                  <span className="chip" key={t}>
-                    {t}
-                  </span>
-                ))}
-              </div>
-            </div>
-          ))}
+        <div data-reveal>
+          <ToolTiles tools={tools} />
         </div>
       </div>
     </section>

@@ -4,6 +4,7 @@ import Work from "./components/Work";
 import { About, Capabilities, Experience, Toolkit, Process, Faq } from "./components/Sections";
 import { Marquee, Contact, Footer } from "./components/Chrome";
 import Reveal from "./components/Reveal";
+import Tilt from "./components/Tilt";
 
 export default function Page() {
   return (
@@ -23,6 +24,7 @@ export default function Page() {
       </main>
       <Footer />
       <Reveal />
+      <Tilt />
     </>
   );
 }

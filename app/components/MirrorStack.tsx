@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Hero3D from "./Hero3D";
 
 /**
  * MirrorStack — the hero's signature object.
@@ -118,7 +119,11 @@ export default function MirrorStack() {
         </div>
       </div>
 
-      <span className="stack-caption">Fig. 01 — Clean, verified, delivered</span>
+      <div className="stack-3d">
+        <Hero3D />
+      </div>
+
+      <span className="stack-caption">Fig. 01 — Chrome ring, live WebGL</span>
     </div>
   );
 }

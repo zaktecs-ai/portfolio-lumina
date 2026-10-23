@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./fonts.css";
 import "./tokens.css";
+import "./mirror-text.css";
 import "./globals.css";
 import { site } from "@/content/site";
 

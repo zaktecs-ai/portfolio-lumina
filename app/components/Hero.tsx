@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { site, hero } from "@/content/site";
 import MirrorStack from "./MirrorStack";
+import MirrorText from "./MirrorText";
 
 /* A small local clock so the hero shows a live PKT time — a detail, not a gimmick. */
 function LocalClock() {
@@ -28,42 +29,6 @@ function LocalClock() {
 
 export default function Hero() {
   const root = useRef<HTMLDivElement>(null);
-  const mirrorRef = useRef<HTMLSpanElement>(null);
-
-  /* Pointer-driven specular highlight: the mirror word literally catches light. */
-  useEffect(() => {
-    const el = root.current;
-    const word = mirrorRef.current;
-    if (!el || !word) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    let raf = 0;
-    let tx = 50;
-    let ty = 50;
-    let cx = 50;
-    let cy = 50;
-
-    const onMove = (e: PointerEvent) => {
-      const r = word.getBoundingClientRect();
-      tx = ((e.clientX - r.left) / r.width) * 100;
-      ty = ((e.clientY - r.top) / r.height) * 100;
-      if (!raf) raf = requestAnimationFrame(loop);
-    };
-
-    const loop = () => {
-      cx += (tx - cx) * 0.12;
-      cy += (ty - cy) * 0.12;
-      word.style.setProperty("--mx", `${cx}%`);
-      word.style.setProperty("--my", `${cy}%`);
-      raf = Math.abs(tx - cx) > 0.1 || Math.abs(ty - cy) > 0.1 ? requestAnimationFrame(loop) : 0;
-    };
-
-    el.addEventListener("pointermove", onMove, { passive: true });
-    return () => {
-      el.removeEventListener("pointermove", onMove);
-      if (raf) cancelAnimationFrame(raf);
-    };
-  }, []);
 
   return (
     <section className="hero" id="top">
@@ -102,9 +67,7 @@ export default function Hero() {
           </span>
           <span className="hero-line hero-line-mirror">
             <span className="reveal-word">into </span>
-            <span className="mirror-word" ref={mirrorRef} data-text="clean">
-              clean
-            </span>
+            <MirrorText text="clean" className="hero-mirror" />
             <span className="reveal-word">, structured,</span>
           </span>
           <span className="hero-line">
@@ -122,6 +85,12 @@ export default function Hero() {
             <span className="hero-rule" aria-hidden="true" />
             <p className="lede hero-lede">{hero.lede}</p>
           </div>
+
+          <ul className="hero-tags" aria-label="What I do">
+            <li>Web scraping</li>
+            <li>Data cleaning</li>
+            <li>Automation</li>
+          </ul>
 
           <div className="hero-actions">
             <a className="btn" href="#work">

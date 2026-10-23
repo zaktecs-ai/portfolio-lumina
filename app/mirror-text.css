@@ -1,0 +1,141 @@
+/* ==========================================================================
+   Mirror text — a polished-metal word with a true reflection beneath it.
+   Layout is in-flow flex: the reflection occupies real space, so it can never
+   land on top of the original word or the next line of copy.
+   ========================================================================== */
+
+.mirror-text {
+  --mx: 52%;
+  --my: 40%;
+  display: inline-flex;
+  vertical-align: baseline;
+}
+
+.mirror-text-stack {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 0.98;
+}
+
+/* 1 — the word: chrome ramp, dark enough at its lightest stroke to clear AA. */
+.mirror-text-word {
+  position: relative;
+  display: block;
+  font-style: italic;
+  padding-right: 0.03em;
+  background-image: radial-gradient(
+      circle at var(--mx) var(--my),
+      rgba(255, 255, 255, 0.95) 0%,
+      rgba(255, 255, 255, 0.5) 9%,
+      rgba(255, 255, 255, 0) 24%
+    ),
+    linear-gradient(
+      168deg,
+      #39445c 0%,
+      #4e5c76 14%,
+      #c9d4e4 28%,
+      #5a6982 40%,
+      #242b3a 54%,
+      #b9c6da 68%,
+      #3c475d 82%,
+      #1b212c 100%
+    );
+  background-size: 260% 260%, 100% 100%;
+  background-position: center, center;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.75)) drop-shadow(0 3px 8px rgba(44, 52, 68, 0.16));
+  z-index: 2;
+}
+
+/* Light travelling across the metal, once every ~8.5s. */
+.mirror-text-word::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  background: linear-gradient(100deg, transparent 36%, rgba(255, 255, 255, 0.95) 48%, transparent 60%);
+  background-size: 240% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: mirrorSheen 8.5s var(--ease-in-out) 1.6s infinite;
+  pointer-events: none;
+}
+
+@keyframes mirrorSheen {
+  0%, 58% { background-position: 175% 0; }
+  100% { background-position: -75% 0; }
+}
+
+/* 2 — the reflection: a flipped copy in normal flow, fading downward.
+   `height: 0.72em` + overflow hidden gives it a fixed, predictable band so the
+   line box is stable and the fade always ends before the next line. */
+.mirror-text-flip {
+  display: block;
+  height: 0.72em;
+  overflow: hidden;
+  font-style: italic;
+  padding-right: 0.03em;
+  transform: scaleY(-1);
+  transform-origin: center top;
+  background-image: linear-gradient(
+    0deg,
+    rgba(36, 43, 58, 0.95) 0%,
+    rgba(74, 87, 112, 0.9) 20%,
+    rgba(120, 135, 160, 0.72) 42%,
+    rgba(163, 176, 198, 0.45) 62%,
+    rgba(196, 208, 226, 0.2) 82%,
+    rgba(214, 224, 240, 0) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  opacity: 0.9;
+  filter: blur(0.35px) saturate(0.8);
+  pointer-events: none;
+  z-index: 1;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.55) 38%, rgba(0, 0, 0, 0.12) 72%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.55) 38%, rgba(0, 0, 0, 0.12) 72%, transparent 100%);
+  animation: mirrorBreathe 9s ease-in-out infinite;
+}
+
+@keyframes mirrorBreathe {
+  0%, 100% { opacity: 0.86; }
+  50% { opacity: 0.98; }
+}
+
+/* 3 — the waterline: a bright contact edge where the two meet. */
+.mirror-text-waterline {
+  position: absolute;
+  left: 2%;
+  right: 2%;
+  top: calc(0.98em - 1px);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.95) 16%, rgba(150, 165, 190, 0.55) 52%, transparent 88%);
+  opacity: 0.85;
+  pointer-events: none;
+  z-index: 3;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mirror-text-word::after {
+    animation: none;
+    opacity: 0;
+  }
+  .mirror-text-flip {
+    animation: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .mirror-text-flip {
+    height: 0.6em;
+    opacity: 0.72;
+  }
+}

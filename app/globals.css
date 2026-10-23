@@ -370,15 +370,16 @@
 }
 
 .hero-title {
-  display: flex;
-  flex-direction: column;
   margin-block: 0;
   color: var(--ink-0);
-  /* The measure is set by the longest line, not by an arbitrary cap: a
-     narrower box silently breaks each line into two and wrecks the rhythm. */
+  /* The h1 must carry the width of its longest nowrap line. It is a grid item,
+     so `1fr`/`auto` tracks hand it the track width instead of its content width
+     — hence an explicit max-content box, which every browser resolves from the
+     text itself. */
+  display: block;
+  justify-self: start;
   width: max-content;
   max-width: 100%;
-  align-self: start;
 }
 
 /* No overflow clipping here: as a flex item this box resolves to the title's
@@ -532,6 +533,49 @@
   gap: 10px;
 }
 
+/* Three words that answer "so what do you do?" before anyone scrolls. */
+.hero-tags {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin: 0;
+  padding: 0;
+  /* Fixed height, not min-height: the three chips wrap to two rows on narrow
+     phones once the webfont swaps in, and that reflow moved every element below
+     by 38px — the single largest CLS source on the page. Reserving the tallest
+     case means the swap changes glyph widths only, never layout. */
+  height: 69px;
+  align-content: flex-start;
+}
+
+@media (min-width: 480px) {
+  .hero-tags {
+    height: 31px;
+  }
+}
+
+.hero-tags li {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 11px;
+  border-radius: var(--r-full);
+  border: 1px solid var(--line-2);
+  background: rgba(255, 255, 255, 0.55);
+  font-size: 12px;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+
+.hero-tags li::before {
+  content: "";
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--chrome-3);
+}
+
 .hero-stats {
   display: grid;
   grid-template-columns: 1fr;
@@ -627,9 +671,11 @@
 /* ── Mirror stack (hero signature object) ─────────────────────────── */
 
 .stack {
-  position: relative;
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
+  max-width: 100%;
   perspective: 1400px;
   perspective-origin: 50% 48%;
   pointer-events: none;
@@ -638,6 +684,7 @@
 .hero-stack-slot {
   position: relative;
   display: none;
+  min-height: 320px;
 }
 
 .stack-glow {
@@ -783,7 +830,7 @@
 
 .stack-caption {
   position: absolute;
-  bottom: -14px;
+  bottom: -6px;
   left: 8%;
   font-family: var(--font-mono);
   font-size: 9px;
@@ -821,6 +868,35 @@
 @media (prefers-reduced-motion: reduce) {
   .stack-panel, .stack-hud { transition: none; }
   .stack-sheen { animation: none; opacity: 0; }
+}
+
+
+/* The WebGL ring sits over the glass panels. If WebGL is unavailable the
+   container is empty and the CSS stack beneath remains the hero object —
+   the composition never depends on a canvas existing. */
+/* Confined to the slot: negative insets let the ring drift over the headline. */
+.stack-3d {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.hero3d {
+  position: absolute;
+  inset: 0;
+}
+
+/* With the ring present the static panels recede to a base shadow. */
+.stack-3d:not(:empty) ~ .stack-caption {
+  opacity: 1;
+}
+
+@media (max-width: 1099px) {
+  .stack-3d {
+    inset: -6% -4% -4% -4%;
+    opacity: 0.9;
+  }
 }
 
 /* ── Marquee ──────────────────────────────────────────────────────── */
@@ -866,6 +942,27 @@
   height: 3px;
   border-radius: 50%;
   background: var(--ink-4);
+}
+
+.marquee-tool {
+  padding-inline: 20px;
+}
+
+.marquee-tool::after {
+  display: none;
+}
+
+.marquee-tool img {
+  width: 15px;
+  height: 15px;
+  object-fit: contain;
+  opacity: 0.72;
+  transition: opacity var(--dur-1) ease, transform var(--dur-2) var(--ease-out);
+}
+
+.marquee-tool:hover img {
+  opacity: 1;
+  transform: translateY(-1px) scale(1.12);
 }
 
 @keyframes marquee {
@@ -1046,6 +1143,82 @@
   font-size: 13.5px;
   color: var(--ink-1);
   font-weight: 500;
+}
+
+
+/* About: one short paragraph, three scannable points, one closing line.
+   No biography wall — the numbers and the work sections carry the detail. */
+.about-lede {
+  font-size: clamp(16px, 1.35vw, 19px);
+  line-height: 1.6;
+  color: var(--ink-1);
+  max-width: 54ch;
+}
+
+.about-mid {
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: var(--ink-2);
+  max-width: 58ch;
+}
+
+.about-points {
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: var(--line-1);
+  border: 1px solid var(--line-1);
+  border-radius: var(--r-md);
+  overflow: hidden;
+}
+
+.about-points li {
+  background: rgba(252, 252, 250, 0.9);
+  padding: 14px 16px;
+  display: grid;
+  grid-template-columns: 78px minmax(0, 1fr);
+  gap: 14px;
+  align-items: baseline;
+}
+
+.about-points b {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  font-weight: 500;
+}
+
+.about-points span {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+
+.about-close {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink-3);
+  max-width: 58ch;
+  padding-left: 14px;
+  border-left: 1px solid var(--line-2);
+}
+
+.about-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+@media (max-width: 420px) {
+  .about-points li {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
 }
 
 /* ── Capabilities ─────────────────────────────────────────────────── */
@@ -1835,6 +2008,174 @@
   transform: translateY(-1px);
 }
 
+
+/* ── Tool tiles (real brand marks, 3D hover) ──────────────────────── */
+
+.tools-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 22px;
+}
+
+.tools-chip {
+  height: 32px;
+  padding-inline: 13px;
+  border-radius: var(--r-full);
+  border: 1px solid var(--line-2);
+  background: rgba(255, 255, 255, 0.5);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  transition: background var(--dur-1) ease, color var(--dur-1) ease, border-color var(--dur-1) ease;
+}
+
+.tools-chip:hover {
+  color: var(--ink-0);
+  border-color: var(--line-3);
+}
+
+.tools-chip[aria-selected="true"] {
+  background: var(--ink-0);
+  border-color: var(--ink-0);
+  color: var(--paper-0);
+}
+
+.tools-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+  gap: 10px;
+  perspective: 900px;
+}
+
+.tool-tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 9px;
+  padding: 14px 8px 11px;
+  border-radius: 14px;
+  background: linear-gradient(170deg, rgba(255, 255, 255, 0.92), rgba(245, 246, 249, 0.72));
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: inset 0 1px 0 #fff, 0 1px 2px rgba(20, 22, 28, 0.04), 0 12px 24px -20px rgba(20, 22, 28, 0.5);
+  transform-style: preserve-3d;
+  transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateZ(var(--tz, 0px));
+  transition: transform 260ms var(--ease-out), box-shadow 260ms var(--ease-out), border-color 260ms ease;
+  animation: tileIn 620ms var(--ease-out) both;
+  will-change: transform;
+}
+
+@keyframes tileIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.tool-tile:hover {
+  border-color: rgba(11, 12, 14, 0.1);
+  box-shadow: inset 0 1px 0 #fff, 0 2px 5px rgba(20, 22, 28, 0.06), 0 26px 44px -24px rgba(20, 22, 28, 0.55);
+}
+
+/* The pad: a frosted disc the mark sits on, with its own reflection. */
+.tool-pad {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: linear-gradient(160deg, #ffffff, #f4f5f8 60%, #eceef3);
+  border: 1px solid rgba(11, 12, 14, 0.07);
+  box-shadow: inset 0 1px 0 #fff, 0 6px 12px -8px rgba(20, 22, 28, 0.45);
+  transform: translateZ(12px);
+  transition: transform 300ms var(--ease-out);
+}
+
+.tool-pad::after {
+  content: "";
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  top: 100%;
+  height: 40%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(11, 12, 14, 0.16), transparent 78%);
+  filter: blur(4px);
+  opacity: 0.5;
+  transform: scaleY(0.5);
+  transition: opacity 300ms ease, transform 300ms var(--ease-out);
+}
+
+.tool-tile:hover .tool-pad {
+  transform: translateZ(20px) translateY(-2px);
+}
+
+.tool-tile:hover .tool-pad::after {
+  opacity: 0.34;
+  transform: scaleY(0.36);
+}
+
+.tool-pad img {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  /* Brand marks keep their own colour — the wall of logos is the colour in
+     an otherwise monochrome page. */
+  filter: saturate(1.02);
+}
+
+.tool-name {
+  font-size: 11px;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--ink-2);
+  text-align: center;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.tool-tile:hover .tool-name {
+  color: var(--ink-0);
+}
+
+@media (max-width: 480px) {
+  .tools-grid {
+    grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+    gap: 8px;
+  }
+  .tool-pad {
+    width: 42px;
+    height: 42px;
+  }
+  .tool-pad img {
+    width: 23px;
+    height: 23px;
+  }
+  .tool-name {
+    font-size: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tool-tile {
+    animation: none;
+    transform: none;
+    transition: none;
+  }
+}
+
 /* ── Process ──────────────────────────────────────────────────────── */
 
 .proc {
@@ -2159,6 +2500,56 @@
   color: var(--ink-4);
 }
 
+
+/* ── 3D tilt + specular glow (cards) ─────────────────────────────── */
+
+[data-tilt] {
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
+  --glow-x: 50%;
+  --glow-y: 0%;
+  transform: perspective(1200px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+  transform-style: preserve-3d;
+  transition: transform 420ms var(--ease-out), box-shadow 420ms var(--ease-out);
+  will-change: transform;
+}
+
+[data-tilt]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(
+    380px circle at var(--glow-x) var(--glow-y),
+    rgba(255, 255, 255, 0.55),
+    rgba(255, 255, 255, 0.12) 42%,
+    transparent 66%
+  );
+  opacity: 0;
+  transition: opacity 420ms ease;
+  z-index: 3;
+  mix-blend-mode: soft-light;
+}
+
+[data-tilt]:hover::before {
+  opacity: 1;
+}
+
+[data-tilt]:hover {
+  box-shadow: inset 0 1px 0 #fff, 0 34px 60px -34px rgba(20, 22, 28, 0.55);
+}
+
+@media (prefers-reduced-motion: reduce), (hover: none) {
+  [data-tilt] {
+    transform: none;
+    transition: none;
+  }
+  [data-tilt]::before {
+    display: none;
+  }
+}
+
 /* ── Scroll progress ──────────────────────────────────────────────── */
 
 .progress {
@@ -2266,6 +2657,41 @@
 }
 
 @media (min-width: 1100px) {
+  /* Desktop: headline and the mirror object are peers in one composition.
+     A `max-content` track requested the longest line but then reported 0px to
+     the siblings, collapsing the object; explicit percentages keep both alive
+     and the headline nowrap keeps every line atomic. */
+  .hero-stage {
+    /* Explicit placement, not auto-flow. `.hero-rail` is display:none on some
+       widths, which removes it from the implicit grid — the headline then slid
+       into the 74px rail track and its nowrap lines overflowed under the 3D
+       object. Naming the columns removes that whole failure mode. */
+    grid-template-columns: 74px minmax(0, 1fr) minmax(210px, 0.5fr);
+    align-items: center;
+    gap: 0 clamp(24px, 3vw, 44px);
+  }
+  .hero-rail {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .hero-title {
+    grid-column: 2;
+    grid-row: 1;
+    width: max-content;
+    max-width: 100%;
+  }
+  .hero-stack-slot {
+    grid-column: 3;
+    grid-row: 1;
+  }
+  .hero-stack-slot {
+    display: block;
+    position: relative;
+    height: clamp(360px, 30vw, 440px);
+    margin-top: -84px;
+    margin-bottom: -18px;
+    overflow: visible;
+  }
   .hero-foot {
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: end;

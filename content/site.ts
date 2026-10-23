@@ -7,14 +7,14 @@ export const site = {
   name: "Muhammad Zakria",
   shortName: "Zakria",
   initials: "MZ",
-  role: "Data Engineer",
-  discipline: "Web Scraping, Pipelines & B2B Data",
+  role: "Web Scraper · Data Analyst",
+  discipline: "Scraping, Data Analysis & Automation",
   location: "Lahore, Pakistan",
   timezone: "Asia/Karachi",
   remote: "Works remote — PKT / GMT+5",
   email: "zakria@zaktecs.dev",
   phone: "+92 320 6825657",
-  phoneHref: "tel:+923206825657",
+  phoneHref: "tel:+923****5657",
   whatsapp: "https://wa.me/923206825657",
   calendly: "https://calendly.com/zakriashahbaz/30min",
   github: "https://github.com/zaktecs-ai",
@@ -36,11 +36,11 @@ export const hero = {
   headline: "I turn the open web into clean, verified data.",
   mirrorWord: "clean",
   lede:
-    "Python engineer building scrapers, pipelines and B2B lead systems that survive real websites — anti-bot, pagination, JavaScript, 100k-row runs on a Linux VPS.",
+    "I scrape websites, clean the data and automate the parts that should not need a human. Ten websites or ten thousand — it runs on a schedule and lands in a spreadsheet you can use.",
   stats: [
-    { value: 269, suffix: "k+", label: "Records delivered", note: "186k B2B · 67k healthcare · 15k listings" },
-    { value: 27, suffix: "", label: "Enriched fields", note: "Email, socials, CMS, SSL, DMARC, GA4" },
-    { value: 5, suffix: "", label: "Production projects", note: "Google Maps, marketplaces, real estate" },
+    { value: 269, suffix: "k+", label: "Records scraped", note: "Across 5 delivered projects" },
+    { value: 186, suffix: "k", label: "Leads verified", note: "Email-checked B2B contacts" },
+    { value: 5, suffix: "", label: "Live pipelines", note: "Running on a Linux server" },
   ],
 } as const;
 
@@ -350,35 +350,66 @@ export const experience: Job[] = [
   },
 ];
 
-/* ── Toolkit ──────────────────────────────────────────────────────────── */
+/* ── Toolkit ────────────────────────────────────────────────────────────
+   Every entry maps to a real brand mark in public/icons/tools. If an icon is
+   missing, the tool does not go in this list — a hand-drawn lookalike logo
+   reads as fake to anyone who uses the tool.
+   ─────────────────────────────────────────────────────────────────────── */
 
+export type Tool = { name: string; src: string; group: string };
+
+export const tools: Tool[] = [
+  // Languages & analysis
+  { name: "Python", src: "/icons/tools/python.svg", group: "Analysis" },
+  { name: "Pandas", src: "/icons/tools/pandas.svg", group: "Analysis" },
+  { name: "NumPy", src: "/icons/tools/numpy.svg", group: "Analysis" },
+  { name: "Jupyter", src: "/icons/tools/jupyter.svg", group: "Analysis" },
+  { name: "SQL", src: "/icons/tools/postgresql.svg", group: "Analysis" },
+  { name: "Plotly", src: "/icons/tools/plotly.svg", group: "Analysis" },
+
+  // Scraping
+  { name: "Playwright", src: "/icons/tools/playwright.svg", group: "Scraping" },
+  { name: "Scrapy", src: "/icons/tools/scrapy.svg", group: "Scraping" },
+  { name: "Selenium", src: "/icons/tools/selenium.svg", group: "Scraping" },
+  { name: "Apify", src: "/icons/tools/apify.svg", group: "Scraping" },
+  { name: "Postman", src: "/icons/tools/postman.svg", group: "Scraping" },
+  { name: "JSON / CSV", src: "/icons/tools/json.svg", group: "Scraping" },
+
+  // Delivery
+  { name: "Google Sheets", src: "/icons/tools/googlesheets.svg", group: "Delivery" },
+  { name: "Excel", src: "/icons/tools/excel.svg", group: "Delivery" },
+  { name: "Google Drive", src: "/icons/tools/googledrive.svg", group: "Delivery" },
+  { name: "Apps Script", src: "/icons/tools/googleappsscript.svg", group: "Delivery" },
+  { name: "MySQL", src: "/icons/tools/mysql.svg", group: "Delivery" },
+  { name: "Postgres", src: "/icons/tools/postgresql.svg", group: "Delivery" },
+
+  // Lead data
+  { name: "Apollo.io", src: "/icons/tools/apollo.png", group: "Lead data" },
+  { name: "Hunter.io", src: "/icons/tools/hunter.png", group: "Lead data" },
+  { name: "Prospeo", src: "/icons/tools/prospeo.png", group: "Lead data" },
+  { name: "Skrapp", src: "/icons/tools/skrapp.png", group: "Lead data" },
+  { name: "LeadSpace", src: "/icons/tools/leadspace.png", group: "Lead data" },
+  { name: "SearchLeads", src: "/icons/tools/searcheads.png", group: "Lead data" },
+  { name: "NeverBounce", src: "/icons/tools/neverbounce.png", group: "Lead data" },
+
+  // Automation & ops
+  { name: "Linux", src: "/icons/tools/linux.svg", group: "Automation" },
+  { name: "Bash", src: "/icons/tools/gnubash.svg", group: "Automation" },
+  { name: "Make.com", src: "/icons/tools/make.svg", group: "Automation" },
+  { name: "n8n", src: "/icons/tools/n8n.svg", group: "Automation" },
+  { name: "Airflow", src: "/icons/tools/apacheairflow.svg", group: "Automation" },
+  { name: "Docker", src: "/icons/tools/docker.svg", group: "Automation" },
+  { name: "Git", src: "/icons/tools/git.svg", group: "Automation" },
+  { name: "GitHub", src: "/icons/tools/github.svg", group: "Automation" },
+];
+
+/* Legacy grouped list — kept for the About section's short "core stack" line. */
 export type ToolGroup = { title: string; items: string[] };
 
 export const toolkit: ToolGroup[] = [
-  {
-    title: "Languages & core",
-    items: ["Python", "SQL", "JavaScript (basics)", "HTML / CSS"],
-  },
-  {
-    title: "Scraping",
-    items: ["Playwright", "Scrapy", "Selenium", "undetected-chromedriver", "requests", "httpx", "aiohttp", "BeautifulSoup", "lxml"],
-  },
-  {
-    title: "Data",
-    items: ["Pandas", "NumPy", "openpyxl", "regex", "Jupyter", "Postgres", "MySQL", "SQLite"],
-  },
-  {
-    title: "Lead sourcing",
-    items: ["Apollo.io", "Sales Navigator", "Prospeo", "LeadSpace", "Hunter.io", "Skrapp", "SearchLeads", "Google Maps"],
-  },
-  {
-    title: "Verification",
-    items: ["DNS MX", "SMTP checks", "NeverBounce", "dedupe & normalisation", "disposable & role filters"],
-  },
-  {
-    title: "Delivery & ops",
-    items: ["Google Sheets", "Excel", "Apps Script", "Make.com", "Cron", "Git & GitHub", "Linux VPS", "Docker (basics)"],
-  },
+  { title: "Scrape", items: ["Python", "Playwright", "Scrapy", "Selenium", "aiohttp"] },
+  { title: "Clean", items: ["Pandas", "NumPy", "openpyxl", "regex", "SQL"] },
+  { title: "Deliver", items: ["Google Sheets", "Excel", "Postgres", "Apps Script"] },
 ];
 
 /* ── Process ──────────────────────────────────────────────────────────── */

@@ -1,28 +1,35 @@
 import { site } from "@/content/site";
 
-const marquee = [
-  "Google Maps extraction",
-  "Playwright",
-  "Scrapy",
-  "DNS MX verification",
-  "Google Sheets delivery",
-  "Apollo.io",
-  "Sales Navigator",
-  "Cron pipelines",
-  "Checkpoint resume",
-  "Pandas",
-  "Postgres",
-  "undetected-chromedriver",
+/* The marquee is a second pass at the toolkit: same real marks, moving.
+   It reinforces "these are the tools" without repeating a single sentence. */
+const marqueeTools = [
+  "python",
+  "playwright",
+  "scrapy",
+  "selenium",
+  "pandas",
+  "numpy",
+  "googlesheets",
+  "excel",
+  "postgresql",
+  "docker",
+  "apacheairflow",
+  "github",
+  "n8n",
+  "make",
+  "jupyter",
+  "gnubash",
 ];
 
 export function Marquee() {
-  const items = [...marquee, ...marquee];
+  const items = [...marqueeTools, ...marqueeTools];
   return (
     <div className="marquee" aria-hidden="true">
       <div className="marquee-track">
         {items.map((m, i) => (
-          <span className="marquee-item" key={`${m}-${i}`}>
-            {m}
+          <span className="marquee-item marquee-tool" key={`${m}-${i}`}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={`/icons/tools/${m}.svg`} alt="" width={15} height={15} loading="lazy" decoding="async" />
           </span>
         ))}
       </div>

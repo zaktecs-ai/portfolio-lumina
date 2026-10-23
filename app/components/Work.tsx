@@ -48,7 +48,7 @@ export default function Work() {
 
         <div className="work-list">
           {projects.map((p, i) => (
-            <article className="work-card" key={p.slug} data-reveal data-reveal-delay={String(Math.min(i + 1, 3))}>
+            <article className="work-card" key={p.slug} data-reveal data-reveal-delay={String(Math.min(i + 1, 3))} data-tilt>
               <div className="work-media">
                 <div className="work-frame">
                   <span className="work-frame-bar" aria-hidden="true">
