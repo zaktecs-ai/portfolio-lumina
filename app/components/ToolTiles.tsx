@@ -3,66 +3,87 @@
 import { useEffect, useRef, useState } from "react";
 
 /**
- * ToolTiles — the toolkit as a wall of real brand marks.
+ * ToolTiles — the stack as a wall of real, full-colour brand marks.
  *
- * Each tile is a small physical object: the icon sits on a glass pad, tilts in
- * 3D toward the pointer, and casts a reflection. On touch (no hover) the tilt
- * is replaced by a scroll-linked lift, so the grid still feels alive on a phone.
+ * Two colour rules matter here:
+ *  - PNG marks (Apollo, Hunter, Skrapp…) are already coloured, so they are used
+ *    untouched.
+ *  - SVG marks from simple-icons are single-path silhouettes. They are inlined
+ *    and filled with the brand's own hex, because a black Python logo and a
+ *    black Google Sheets logo read as a generic icon set, not as tools.
  *
- * Icons are the vendors' own marks (see public/icons/tools), not redrawn
- * approximations — a Python logo that is not Python's logo reads as fake.
+ * Interaction: tiles tilt toward the pointer and float their pad; the pad's
+ * shadow tightens as it lifts. Touch devices get a plain, flat grid.
  */
 
-export type Tool = { name: string; src: string; group: string };
+type Tool = { name: string; src: string; color: string; group: string };
 
 export default function ToolTiles({ tools }: { tools: Tool[] }) {
   const root = useRef<HTMLDivElement>(null);
-  const [activeGroup, setActiveGroup] = useState<string>("All");
+  const [group, setGroup] = useState<string>("All");
+  const [colorSvg, setColorSvg] = useState<Record<string, string>>({});
 
   const groups = ["All", ...Array.from(new Set(tools.map((t) => t.group)))];
-  const shown = activeGroup === "All" ? tools : tools.filter((t) => t.group === activeGroup);
+  const shown = group === "All" ? tools : tools.filter((t) => t.group === group);
+
+  /* Colourise the single-path SVGs once, by filling with the brand hex.
+     Fetch is same-origin and cached, so this is a handful of small requests. */
+  useEffect(() => {
+    let cancelled = false;
+    const svgs = Array.from(new Set(tools.filter((t) => t.src.endsWith(".svg")).map((t) => t.src)));
+    Promise.all(
+      svgs.map(async (src) => {
+        try {
+          const res = await fetch(src);
+          const text = await res.text();
+          const tool = tools.find((t) => t.src === src);
+          const colour = tool?.color ?? "#111111";
+          const coloured = text.replace(/<svg([^>]*)>/, `<svg$1 fill="${colour}">`);
+          return [src, coloured] as const;
+        } catch {
+          return [src, ""] as const;
+        }
+      }),
+    ).then((pairs) => {
+      if (!cancelled) setColorSvg(Object.fromEntries(pairs.filter(([, v]) => v)));
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [tools]);
 
   useEffect(() => {
     const el = root.current;
     if (!el) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    if (!window.matchMedia("(hover: hover)").matches) return; // touch: CSS handles it
+    if (!window.matchMedia("(hover: hover)").matches) return;
 
     const tiles = Array.from(el.querySelectorAll<HTMLElement>("[data-tile]"));
     let raf = 0;
-
     const reset = (t: HTMLElement) => {
-      t.style.setProperty("--rx", "0deg");
-      t.style.setProperty("--ry", "0deg");
-      t.style.setProperty("--tz", "0px");
+      t.style.setProperty("--tilt-x", "0deg");
+      t.style.setProperty("--tilt-y", "0deg");
+      t.style.setProperty("--lift", "0px");
     };
-
     const onMove = (e: PointerEvent) => {
       if (raf) return;
       raf = requestAnimationFrame(() => {
         raf = 0;
         for (const t of tiles) {
           const r = t.getBoundingClientRect();
-          const cx = r.left + r.width / 2;
-          const cy = r.top + r.height / 2;
-          const dx = (e.clientX - cx) / (r.width / 2);
-          const dy = (e.clientY - cy) / (r.height / 2);
+          const dx = (e.clientX - (r.left + r.width / 2)) / (r.width / 2);
+          const dy = (e.clientY - (r.top + r.height / 2)) / (r.height / 2);
           const d = Math.hypot(dx, dy);
-          // Only tiles near the pointer react: a whole grid tilting at once
-          // looks like a toy, one or two tiles lifting looks expensive.
-          if (d < 1.6) {
-            const fall = 1 - d / 1.6;
-            t.style.setProperty("--rx", `${(-dy * 9 * fall).toFixed(2)}deg`);
-            t.style.setProperty("--ry", `${(dx * 11 * fall).toFixed(2)}deg`);
-            t.style.setProperty("--tz", `${(6 * fall).toFixed(1)}px`);
-          } else {
-            reset(t);
-          }
+          if (d < 1.7) {
+            const f = 1 - d / 1.7;
+            t.style.setProperty("--tilt-x", `${(-dy * 8 * f).toFixed(2)}deg`);
+            t.style.setProperty("--tilt-y", `${(dx * 10 * f).toFixed(2)}deg`);
+            t.style.setProperty("--lift", `${(5 * f).toFixed(1)}px`);
+          } else reset(t);
         }
       });
     };
     const onLeave = () => tiles.forEach(reset);
-
     el.addEventListener("pointermove", onMove, { passive: true });
     el.addEventListener("pointerleave", onLeave);
     return () => {
@@ -74,15 +95,9 @@ export default function ToolTiles({ tools }: { tools: Tool[] }) {
 
   return (
     <div className="tools" ref={root}>
-      <div className="tools-filter" role="tablist" aria-label="Filter tools by group">
+      <div className="tools-filter" role="tablist" aria-label="Filter by group">
         {groups.map((g) => (
-          <button
-            key={g}
-            role="tab"
-            aria-selected={activeGroup === g}
-            className="tools-chip"
-            onClick={() => setActiveGroup(g)}
-          >
+          <button key={g} role="tab" aria-selected={group === g} className="tools-chip" onClick={() => setGroup(g)}>
             {g}
           </button>
         ))}
@@ -90,10 +105,23 @@ export default function ToolTiles({ tools }: { tools: Tool[] }) {
 
       <ul className="tools-grid">
         {shown.map((t, i) => (
-          <li className="tool-tile" data-tile key={`${t.group}-${t.name}`} style={{ animationDelay: `${Math.min(i, 18) * 26}ms` }}>
+          <li
+            className="tool-tile"
+            data-tile
+            key={`${t.group}-${t.name}`}
+            style={{ animationDelay: `${Math.min(i, 20) * 22}ms` }}
+          >
             <span className="tool-pad">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={t.src} alt="" aria-hidden="true" width={34} height={34} loading="lazy" decoding="async" />
+              {t.src.endsWith(".svg") && colorSvg[t.src] ? (
+                <span
+                  className="tool-glyph"
+                  aria-hidden="true"
+                  dangerouslySetInnerHTML={{ __html: colorSvg[t.src] }}
+                />
+              ) : (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img src={t.src} alt="" aria-hidden="true" width={30} height={30} loading="lazy" decoding="async" />
+              )}
             </span>
             <span className="tool-name">{t.name}</span>
           </li>

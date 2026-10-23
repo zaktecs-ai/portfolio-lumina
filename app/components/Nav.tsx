@@ -1,12 +1,13 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { site } from "@/content/site";
 
 const links = [
   { href: "#about", label: "About", index: "01" },
-  { href: "#capabilities", label: "Capabilities", index: "02" },
-  { href: "#work", label: "Work", index: "03" },
+  { href: "#work", label: "Work", index: "02" },
+  { href: "#stack", label: "Stack", index: "03" },
   { href: "#experience", label: "Experience", index: "04" },
   { href: "#faq", label: "FAQ", index: "05" },
 ];
@@ -76,8 +77,10 @@ export default function Nav() {
       <header className={`nav${stuck ? " is-stuck" : ""}`}>
         <div className="wrap nav-inner">
           <a className="brand" href="#top" aria-label={`${site.name} — home`}>
-            <span className="brand-mark" aria-hidden="true">
-              Z
+            {/* Circular portrait, not initials: the face is the brand mark. */}
+            <span className="brand-avatar">
+              <Image src={site.profile} alt="" width={80} height={80} sizes="36px" quality={90} priority />
+              <span className="brand-avatar-ring" aria-hidden="true" />
             </span>
             <span className="brand-text">
               <span className="brand-name">{site.name}</span>

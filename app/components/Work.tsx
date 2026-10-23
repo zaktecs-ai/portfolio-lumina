@@ -36,14 +36,13 @@ export default function Work() {
     <section className="section" id="work">
       <div className="wrap">
         <SecHead
-          index="03"
+          index="02"
           label="Selected work"
           title={
             <>
-              Five builds. <em style={{ fontStyle: "italic", color: "var(--ink-3)" }}>269k rows</em> between them.
-            </>
+              Eight builds, <em style={{ fontStyle: "italic", color: "var(--ink-3)" }}>269k rows</em>.</>
           }
-          aside="Each one shipped with a run log, a sample dataset and a case study. Open a card to see the method, the numbers and the evidence."
+          aside="Open a card for the method, the numbers and the repo."
         />
 
         <div className="work-list">
@@ -68,7 +67,7 @@ export default function Work() {
                     />
                   </div>
                 </div>
-                <span className="work-cat">
+                <span className="work-cat" data-source={p.source}>
                   <i style={{ background: accentColor[p.accent] }} aria-hidden="true" />
                   {p.category}
                 </span>
@@ -116,18 +115,20 @@ export default function Work() {
                       <path d="M2.5 7h9M8 3.5 11.5 7 8 10.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </button>
-                  {p.video ? (
-                    <button
+                  {p.repo ? (
+                    <a
                       className="btn btn-sm btn-ghost"
-                      onClick={(e) => open(p, e.currentTarget)}
-                      aria-label={`Watch ${p.title} run`}
+                      href={p.repo}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                      aria-label={`${p.title} on GitHub`}
                     >
-                      Watch it run
-                    </button>
+                      GitHub ↗
+                    </a>
                   ) : null}
                   {p.docs?.[1] ? (
                     <a className="btn btn-sm btn-ghost" href={p.docs[1].href} download>
-                      Sample data
+                      Sample
                     </a>
                   ) : null}
                 </div>

@@ -1,0 +1,186 @@
+/* ==========================================================================
+   Hero type: one headline, one surface, one light sweep.
+   ========================================================================== */
+
+/* Tight, intentional line rhythm. The previous build had two line boxes per
+   visual line (each `.hero-line` was 207px tall for 107px of type), which read
+   as "text crammed together". Every line is now exactly one line-height. */
+.hero-title {
+  margin-block: 0;
+  color: var(--ink-0);
+  display: block;
+  justify-self: start;
+  width: max-content;
+  max-width: 100%;
+  /* Optical tightening only: negative tracking on a serif at display size,
+     never negative line-height. */
+  letter-spacing: -0.032em;
+  line-height: 0.96;
+}
+
+.hero-line {
+  position: relative;
+  display: block;
+  padding-bottom: 0;
+  white-space: nowrap;
+  line-height: 0.96;
+}
+
+/* The mirror line carries a reflection below it, so it needs its own room —
+   and only that line. */
+.hero-line-mirror {
+  padding-bottom: 0.06em;
+}
+
+/* ── Light sweep across the entire headline ─────────────────────────
+   A single bright band travelling left → right over the whole block, so the
+   type reads as one polished surface rather than three separate lines. */
+.hero-sweep {
+  position: relative;
+  isolation: isolate;
+}
+
+.hero-sweep::after {
+  content: "";
+  position: absolute;
+  inset: -0.06em -0.04em;
+  z-index: 3;
+  pointer-events: none;
+  background: linear-gradient(
+    100deg,
+    transparent 34%,
+    rgba(255, 255, 255, 0) 40%,
+    rgba(255, 255, 255, 0.92) 47%,
+    rgba(255, 255, 255, 0.55) 51%,
+    rgba(255, 255, 255, 0) 58%,
+    transparent 64%
+  );
+  background-size: 260% 100%;
+  background-repeat: no-repeat;
+  background-position: 190% 0;
+  /* `screen` lifts the dark type, which is what light does to ink on paper. */
+  mix-blend-mode: screen;
+  animation: headlineSweep 9s cubic-bezier(0.5, 0, 0.2, 1) 1.4s infinite;
+  -webkit-mask-image: linear-gradient(180deg, #000 6%, #000 88%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 6%, #000 88%, transparent 100%);
+}
+
+@keyframes headlineSweep {
+  0% {
+    background-position: 190% 0;
+    opacity: 0;
+  }
+  6% {
+    opacity: 1;
+  }
+  46% {
+    background-position: -60% 0;
+    opacity: 1;
+  }
+  52%,
+  100% {
+    background-position: -60% 0;
+    opacity: 0;
+  }
+}
+
+/* Second, slower glint on a different rhythm so the surface never looks like a
+   single looping GIF. */
+.hero-sweep::before {
+  content: "";
+  position: absolute;
+  inset: -0.04em;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent 42%,
+    rgba(255, 255, 255, 0.5) 49%,
+    rgba(255, 255, 255, 0.2) 52%,
+    transparent 58%
+  );
+  background-size: 300% 100%;
+  background-repeat: no-repeat;
+  background-position: 160% 0;
+  mix-blend-mode: soft-light;
+  animation: headlineGlint 13s cubic-bezier(0.4, 0, 0.6, 1) 4s infinite;
+}
+
+@keyframes headlineGlint {
+  0%,
+  58% {
+    background-position: 160% 0;
+    opacity: 0;
+  }
+  66% {
+    opacity: 0.9;
+  }
+  96%,
+  100% {
+    background-position: -50% 0;
+    opacity: 0;
+  }
+}
+
+/* ── Word rise-in reveal ─────────────────────────────────────────────*/
+
+.reveal-word {
+  display: inline-block;
+  transform: translateY(0.42em);
+  opacity: 0;
+  animation: riseIn 1s var(--ease-out) forwards;
+  will-change: transform, opacity;
+}
+
+.hero-line:nth-child(1) .reveal-word {
+  animation-delay: 0.06s;
+}
+.hero-line:nth-child(2) .reveal-word {
+  animation-delay: 0.16s;
+}
+.hero-line:nth-child(3) .reveal-word {
+  animation-delay: 0.26s;
+}
+
+@keyframes riseIn {
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ── Hero stats: three numbers, no paragraphs ──────────────────────── */
+
+.stat-label {
+  display: block;
+  margin-top: 4px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+/* ── Reduced motion ────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-sweep::after,
+  .hero-sweep::before {
+    animation: none;
+    opacity: 0;
+  }
+  .reveal-word {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (max-width: 759px) {
+  .hero-line {
+    white-space: normal;
+  }
+  .hero-title {
+    width: 100%;
+  }
+}

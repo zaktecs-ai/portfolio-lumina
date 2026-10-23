@@ -7,18 +7,18 @@ const marqueeTools = [
   "playwright",
   "scrapy",
   "selenium",
+  "aiohttp",
   "pandas",
   "numpy",
+  "jupyter",
   "googlesheets",
   "excel",
   "postgresql",
   "docker",
-  "apacheairflow",
   "github",
-  "n8n",
+  "linux",
   "make",
-  "jupyter",
-  "gnubash",
+  "apify",
 ];
 
 export function Marquee() {
@@ -44,14 +44,13 @@ export function Contact() {
         <div className="contact-inner" data-reveal>
           <div className="contact-grid">
             <div>
-              <p className="eyebrow">08 — Contact</p>
+              <p className="eyebrow">06 — Contact</p>
               <h2 className="display h2 contact-title" style={{ marginTop: 14 }}>
-                Send the source. I&apos;ll tell you if it&apos;s{" "}
+                Send the link. I&apos;ll say if it&apos;s{" "}
                 <em style={{ fontStyle: "italic" }}>scrapable</em>.
               </h2>
               <p className="contact-lede">
-                Useful first message: the URL or platform, the fields you need, an approximate row count and how often
-                the data should refresh. You&apos;ll get an honest scope and a fixed price — or a straight no.
+                Tell me the site, the fields and the row count. You&apos;ll get a fixed price or a straight no.
               </p>
               <div className="contact-actions">
                 <a className="btn" href={`mailto:${site.email}?subject=Data%20project%20enquiry`}>
@@ -119,15 +118,15 @@ export function Footer() {
           </a>
           <nav className="footer-links" aria-label="Footer">
             <a href="#about">About</a>
-            <a href="#capabilities">Capabilities</a>
             <a href="#work">Work</a>
+            <a href="#stack">Stack</a>
             <a href="#experience">Experience</a>
             <a href="#faq">FAQ</a>
             <a href={`mailto:${site.email}`}>Email</a>
           </nav>
         </div>
         <div className="footer-bottom">
-          <p>© {new Date().getFullYear()} {site.name}. Designed and built from scratch — Next.js, hand-written CSS, no template.</p>
+          <p>© {new Date().getFullYear()} {site.name}. Built from scratch — Next.js, hand-written CSS.</p>
           <p>
             <a className="link-wipe" href="#top">
               Back to top ↑

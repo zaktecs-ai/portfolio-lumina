@@ -1,0 +1,126 @@
+{
+ "python": [
+  "3776AB",
+  "Python"
+ ],
+ "pandas": [
+  "150458",
+  "pandas"
+ ],
+ "numpy": [
+  "013243",
+  "NumPy"
+ ],
+ "jupyter": [
+  "F37626",
+  "Jupyter"
+ ],
+ "mysql": [
+  "4479A1",
+  "MySQL"
+ ],
+ "postgresql": [
+  "4169E1",
+  "PostgreSQL"
+ ],
+ "sqlite": [
+  "003B57",
+  "SQLite"
+ ],
+ "scrapy": [
+  "60A839",
+  "Scrapy"
+ ],
+ "selenium": [
+  "43B02A",
+  "Selenium"
+ ],
+ "aiohttp": [
+  "2C5BB4",
+  "AIOHTTP"
+ ],
+ "googlesheets": [
+  "34A853",
+  "Google Sheets"
+ ],
+ "googledrive": [
+  "4285F4",
+  "Google Drive"
+ ],
+ "googleappsscript": [
+  "4285F4",
+  "Google Apps Script"
+ ],
+ "linux": [
+  "FCC624",
+  "Linux"
+ ],
+ "gnubash": [
+  "4EAA25",
+  "GNU Bash"
+ ],
+ "docker": [
+  "2496ED",
+  "Docker"
+ ],
+ "git": [
+  "F05032",
+  "Git"
+ ],
+ "github": [
+  "181717",
+  "GitHub"
+ ],
+ "json": [
+  "000000",
+  "JSON"
+ ],
+ "javascript": [
+  "F7DF1E",
+  "JavaScript"
+ ],
+ "html5": [
+  "E34F26",
+  "HTML5"
+ ],
+ "css3": [
+  "1572B6",
+  "CSS3"
+ ],
+ "postman": [
+  "FF6C37",
+  "Postman"
+ ],
+ "digitalocean": [
+  "0080FF",
+  "DigitalOcean"
+ ],
+ "apify": [
+  "000000",
+  "Apify"
+ ],
+ "make": [
+  "6D00CC",
+  "Make"
+ ],
+ "n8n": [
+  "EA4B71",
+  "n8n"
+ ],
+ "airtable": [
+  "18BFFF",
+  "Airtable"
+ ],
+ "notion": [
+  "000000",
+  "Notion"
+ ],
+ "googlemaps": [
+  "4285F4",
+  "Google Maps"
+ ],
+ "linkedin": [
+  "0A66C2",
+  "LinkedIn"
+ ]
+}

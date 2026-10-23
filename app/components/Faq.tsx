@@ -10,7 +10,7 @@ export default function Faq() {
     <section className="section" id="faq" style={{ paddingTop: 0 }}>
       <div className="wrap">
         <SecHead
-          index="07"
+          index="05"
           label="FAQ"
           title="The questions that come up first."
           aside={

@@ -58,23 +58,44 @@
   min-width: 0;
 }
 
-.brand-mark {
+.brand-avatar {
   position: relative;
-  display: grid;
-  place-items: center;
-  width: 30px;
-  height: 30px;
+  width: 34px;
+  height: 34px;
   flex: none;
-  border-radius: 9px;
-  background: linear-gradient(160deg, #ffffff, #d7dde8 55%, #f7f8fb);
-  border: 1px solid rgba(255, 255, 255, 0.9);
-  box-shadow: inset 0 1px 0 #fff, inset 0 -2px 4px rgba(91, 103, 128, 0.22), var(--shadow-1);
-  font-family: var(--font-display);
-  font-size: 15px;
-  color: var(--ink-1);
-  letter-spacing: -0.02em;
-  line-height: 1;
-  padding-bottom: 1px;
+  border-radius: 50%;
+  overflow: hidden;
+  isolation: isolate;
+  background: linear-gradient(160deg, #ffffff, #dfe4ec);
+  box-shadow: 0 0 0 1px rgba(11, 12, 14, 0.08), 0 4px 10px -6px rgba(20, 22, 28, 0.5);
+  transition: transform var(--dur-2) var(--ease-out), box-shadow var(--dur-2) var(--ease-out);
+}
+
+.brand-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Face sits slightly high in the portrait; bias the crop upward so the eyes
+     land on the circle's centre line. */
+  object-position: 50% 18%;
+  transform: scale(1.04);
+}
+
+/* Chrome ring, matching the rest of the mirror language. */
+.brand-avatar-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.75),
+    inset 0 -6px 10px -8px rgba(44, 52, 68, 0.6);
+  background: linear-gradient(150deg, rgba(255, 255, 255, 0.35), transparent 42%, rgba(91, 103, 128, 0.14));
+}
+
+.brand:hover .brand-avatar {
+  transform: translateY(-1px);
+  box-shadow: 0 0 0 1px rgba(11, 12, 14, 0.12), 0 8px 16px -8px rgba(20, 22, 28, 0.55);
 }
 
 .brand-text {
@@ -337,9 +358,21 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  /* 12px was tight enough that the status pill's ring grazed the eyebrow once
+     the row wrapped on a 390px screen; 18px clears it at every width. */
+  gap: 10px 18px;
   flex-wrap: wrap;
   margin-bottom: -6px;
+}
+
+@media (max-width: 520px) {
+  .hero-top {
+    /* Stack instead of crowding: label above, availability below. */
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 0;
+  }
 }
 
 .hero-status {
@@ -369,106 +402,24 @@
   50% { box-shadow: 0 0 0 5px rgba(79, 158, 110, 0.06); }
 }
 
-.hero-title {
-  margin-block: 0;
-  color: var(--ink-0);
-  /* The h1 must carry the width of its longest nowrap line. It is a grid item,
-     so `1fr`/`auto` tracks hand it the track width instead of its content width
-     — hence an explicit max-content box, which every browser resolves from the
-     text itself. */
-  display: block;
-  justify-self: start;
-  width: max-content;
-  max-width: 100%;
-}
 
 /* No overflow clipping here: as a flex item this box resolves to the title's
    width, so `overflow: hidden` silently cut off the word that defined that
    width. The reveal is a transform on the inner span instead. */
-.hero-line {
-  position: relative;
-  display: block;
-  padding-bottom: 0.04em;
-  white-space: nowrap;
-}
 
 /* A soft mirrored plinth under the chrome line — reads as a reflection,
    not a highlight, and never competes with the type. */
-.hero-line-mirror {
-  position: relative;
-}
 
-.hero-line-mirror::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 0.1em;
-  background: linear-gradient(90deg, transparent, rgba(91, 103, 128, 0.16) 24%, rgba(91, 103, 128, 0.05) 64%, transparent);
-  filter: blur(7px);
-  pointer-events: none;
-  z-index: 0;
-}
 
-.hero-line-mirror .mirror-word {
-  position: relative;
-  z-index: 1;
-}
 
-.reveal-word {
-  display: inline-block;
-  transform: translateY(0.55em) rotate(1.2deg);
-  opacity: 0;
-  animation: riseIn 1.15s var(--ease-out) forwards;
-  will-change: transform, opacity;
-}
 .hero-line:nth-child(1) .reveal-word { animation-delay: 0.08s; }
 .hero-line:nth-child(2) .reveal-word { animation-delay: 0.2s; }
 .hero-line:nth-child(3) .reveal-word { animation-delay: 0.34s; }
 
-@keyframes riseIn {
-  to {
-    transform: translateY(0) rotate(0);
-    opacity: 1;
-  }
-}
 
 /* The mirror word: chrome gradient + a specular spot that follows the pointer. */
 /* Chrome ramp tuned for legibility on warm paper: the darkest band is #2c3444,
    so even the lightest stroke keeps ~7:1 contrast against --paper-1. */
-.mirror-word {
-  position: relative;
-  display: inline-block;
-  font-style: italic;
-  padding-right: 0.04em;
-  --mx: 50%;
-  --my: 50%;
-  background-image: radial-gradient(
-      circle at var(--mx) var(--my),
-      rgba(255, 255, 255, 0.92) 0%,
-      rgba(255, 255, 255, 0.55) 10%,
-      rgba(255, 255, 255, 0) 26%
-    ),
-    linear-gradient(
-      168deg,
-      #39445c 0%,
-      #4e5c76 14%,
-      #c9d4e4 28%,
-      #5a6982 40%,
-      #242b3a 54%,
-      #b9c6da 68%,
-      #3c475d 82%,
-      #1b212c 100%
-    );
-  background-size: 260% 260%, 100% 100%;
-  background-position: center, center;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.7)) drop-shadow(0 4px 10px rgba(44, 52, 68, 0.2));
-}
 
 /* A thin highlight sweeping across the word on load, then on a 9s cycle. */
 .mirror-word::after {
@@ -485,10 +436,6 @@
   pointer-events: none;
 }
 
-@keyframes sheen {
-  0%, 62% { background-position: 160% 0; }
-  100% { background-position: -60% 0; }
-}
 
 .hero-foot {
   display: grid;
@@ -534,140 +481,6 @@
 }
 
 /* Three words that answer "so what do you do?" before anyone scrolls. */
-.hero-tags {
-  list-style: none;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 7px;
-  margin: 0;
-  padding: 0;
-  /* Fixed height, not min-height: the three chips wrap to two rows on narrow
-     phones once the webfont swaps in, and that reflow moved every element below
-     by 38px — the single largest CLS source on the page. Reserving the tallest
-     case means the swap changes glyph widths only, never layout. */
-  height: 69px;
-  align-content: flex-start;
-}
-
-@media (min-width: 480px) {
-  .hero-tags {
-    height: 31px;
-  }
-}
-
-.hero-tags li {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 5px 11px;
-  border-radius: var(--r-full);
-  border: 1px solid var(--line-2);
-  background: rgba(255, 255, 255, 0.55);
-  font-size: 12px;
-  color: var(--ink-2);
-  white-space: nowrap;
-}
-
-.hero-tags li::before {
-  content: "";
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: var(--chrome-3);
-}
-
-.hero-stats {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1px;
-  margin: 0;
-  background: var(--line-1);
-  border-radius: var(--r-md);
-  overflow: hidden;
-  border: 1px solid var(--line-1);
-}
-
-.hero-stat {
-  background: rgba(252, 252, 250, 0.72);
-  padding: 16px 18px;
-  backdrop-filter: blur(14px) saturate(140%);
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.hero-stat dt {
-  margin: 0;
-}
-
-.hero-stat dd {
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.stat-value {
-  font-family: var(--font-display);
-  font-size: clamp(26px, 3.4vw, 34px);
-  line-height: 1;
-  letter-spacing: -0.025em;
-  color: var(--ink-0);
-}
-
-.stat-suffix {
-  font-size: 0.62em;
-  vertical-align: 0.18em;
-  margin-left: 1px;
-  color: var(--ink-2);
-}
-
-.stat-note {
-  font-size: 11.5px;
-  line-height: 1.45;
-  color: var(--ink-3);
-}
-
-.hero-meta {
-  margin-top: auto;
-  padding-top: clamp(24px, 4vw, 46px);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18px;
-}
-
-.hero-meta > span:first-child {
-  color: var(--ink-3);
-}
-
-.hero-meta-scroll {
-  display: none;
-  align-items: center;
-  gap: 10px;
-}
-
-.scroll-line {
-  display: block;
-  width: 54px;
-  height: 1px;
-  background: var(--line-2);
-  position: relative;
-  overflow: hidden;
-}
-.scroll-line::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: var(--ink-1);
-  transform: translateX(-100%);
-  animation: scrollSweep 2.6s var(--ease-in-out) infinite;
-}
-@keyframes scrollSweep {
-  0% { transform: translateX(-100%); }
-  55%, 100% { transform: translateX(100%); }
-}
-
 /* ── Mirror stack (hero signature object) ─────────────────────────── */
 
 .stack {
@@ -991,6 +804,15 @@
 .sec-title {
   color: var(--ink-0);
   max-width: 20ch;
+  /* Display serif ascenders will reach into the eyebrow above if the h2 sits
+     flush; this gap is optical, not decorative. */
+  margin-top: 12px;
+}
+
+@media (max-width: 560px) {
+  .sec-title {
+    margin-top: 16px;
+  }
 }
 
 .sec-aside {
@@ -2066,7 +1888,8 @@
   border: 1px solid rgba(255, 255, 255, 0.95);
   box-shadow: inset 0 1px 0 #fff, 0 1px 2px rgba(20, 22, 28, 0.04), 0 12px 24px -20px rgba(20, 22, 28, 0.5);
   transform-style: preserve-3d;
-  transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateZ(var(--tz, 0px));
+  transform: perspective(700px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg))
+    translateY(calc(var(--lift, 0px) * -1));
   transition: transform 260ms var(--ease-out), box-shadow 260ms var(--ease-out), border-color 260ms ease;
   animation: tileIn 620ms var(--ease-out) both;
   will-change: transform;
@@ -2131,9 +1954,21 @@
   width: 26px;
   height: 26px;
   object-fit: contain;
-  /* Brand marks keep their own colour — the wall of logos is the colour in
-     an otherwise monochrome page. */
-  filter: saturate(1.02);
+}
+
+/* Inlined brand SVGs: sized like the <img> path, colour comes from the fill
+   already written into the markup. */
+.tool-glyph {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+}
+
+.tool-glyph svg {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
 .tool-name {

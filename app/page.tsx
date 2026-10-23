@@ -1,7 +1,8 @@
 import Nav from "./components/Nav";
 import Hero from "./components/Hero";
 import Work from "./components/Work";
-import { About, Capabilities, Experience, Toolkit, Process, Faq } from "./components/Sections";
+import Faq from "./components/Faq";
+import { About, Stack, Experience } from "./components/Sections";
 import { Marquee, Contact, Footer } from "./components/Chrome";
 import Reveal from "./components/Reveal";
 import Tilt from "./components/Tilt";
@@ -14,11 +15,9 @@ export default function Page() {
         <Hero />
         <Marquee />
         <About />
-        <Capabilities />
         <Work />
+        <Stack />
         <Experience />
-        <Toolkit />
-        <Process />
         <Faq />
         <Contact />
       </main>

@@ -77,7 +77,7 @@
    line box is stable and the fade always ends before the next line. */
 .mirror-text-flip {
   display: block;
-  height: 0.72em;
+  height: 0.52em;
   overflow: hidden;
   font-style: italic;
   padding-right: 0.03em;
@@ -135,7 +135,7 @@
 
 @media (max-width: 640px) {
   .mirror-text-flip {
-    height: 0.6em;
+    height: 0.44em;
     opacity: 0.72;
   }
 }
