@@ -120,7 +120,7 @@ export default function ToolTiles({ tools }: { tools: Tool[] }) {
                 />
               ) : (
                 /* eslint-disable-next-line @next/next/no-img-element */
-                <img src={t.src} alt="" aria-hidden="true" width={30} height={30} loading="lazy" decoding="async" />
+                <img src={t.src} alt="" aria-hidden="true" width={30} height={30} loading="eager" decoding="async" />
               )}
             </span>
             <span className="tool-name">{t.name}</span>

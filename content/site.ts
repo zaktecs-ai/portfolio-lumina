@@ -3,14 +3,18 @@
  * no sentence repeated, nothing padded.
  */
 
-/* The canonical origin. It has to be configurable: the build-time default is the
-   production domain, but a preview deploy (or a tunnel) must advertise its own
-   host or every share card points at a page the crawler cannot reach. */
+/* The canonical origin.
+ *
+ * `https://www.` on purpose: the apex domain answers with a 308 to www, and a
+ * crawler that does not follow redirects on an og:image (Telegram and Facebook
+ * often do not) then renders a link preview with no image at all. Pointing at the
+ * host that answers 200 directly removes that failure mode.
+ *
+ * Never `VERCEL_URL`: that is the per-deployment host
+ * (portfolio-website-abc123.vercel.app), so share cards advertised a URL that is
+ * not the site and caches keyed their preview against it. */
 const env = (globalThis as { process?: { env?: Record<string, string | undefined> } }).process?.env || {};
-export const canonicalUrl = (
-  env.NEXT_PUBLIC_SITE_URL ||
-  (env.VERCEL_URL ? `https://${env.VERCEL_URL}` : "https://zaktecs.dev")
-).replace(/\/+$/, "");
+export const canonicalUrl = (env.NEXT_PUBLIC_SITE_URL || "https://www.zaktecs.dev").replace(/\/+$/, "");
 
 export const site = {
   name: "Muhammad Zakria",

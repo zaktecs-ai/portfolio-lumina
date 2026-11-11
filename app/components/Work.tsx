@@ -63,7 +63,11 @@ export default function Work() {
                       fill
                       sizes="(max-width: 900px) 92vw, 620px"
                       style={{ objectFit: "cover", objectPosition: p.coverPos ?? "top center" }}
-                      loading={i < 2 ? "eager" : "lazy"}
+                      /* Cards are the substance of this page: load every cover up
+                         front. Lazy covers spent the first seconds as empty
+                         frames on a cold CDN cache, which reads as broken images. */
+                      loading="eager"
+                      priority={i < 3}
                     />
                   </div>
                 </div>

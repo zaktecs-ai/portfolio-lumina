@@ -245,19 +245,21 @@ export default function Hero3D() {
           "gl_FragColor = vec4( blendOverlay( base.rgb, color ), 1.0 );",
           `
           vec3 refl = blendOverlay( base.rgb, color );
-          // softness: cheap 5-tap box on the reflection texture
+          /* vUv is a vec4 in this shader and the scene is sampled through
+             texture2DProj. Sample the neighbours in the same projective space:
+             adding a vec2 to vUv is a type error that silently kills the whole
+             material, which is why the mirror went flat on the first deploy. */
           vec2 px = uTexel;
           vec3 soft = refl;
-          soft += texture2D( tDiffuse, vUv + vec2( px.x * 1.6, 0.0 ) ).rgb;
-          soft += texture2D( tDiffuse, vUv - vec2( px.x * 1.6, 0.0 ) ).rgb;
-          soft += texture2D( tDiffuse, vUv + vec2( 0.0, px.y * 1.6 ) ).rgb;
-          soft += texture2D( tDiffuse, vUv - vec2( 0.0, px.y * 1.6 ) ).rgb;
+          soft += texture2DProj( tDiffuse, vUv + vec4( px.x * 1.6, 0.0, 0.0, 0.0 ) ).rgb;
+          soft += texture2DProj( tDiffuse, vUv - vec4( px.x * 1.6, 0.0, 0.0, 0.0 ) ).rgb;
+          soft += texture2DProj( tDiffuse, vUv + vec4( 0.0, px.y * 1.6, 0.0, 0.0 ) ).rgb;
+          soft += texture2DProj( tDiffuse, vUv - vec4( 0.0, px.y * 1.6, 0.0, 0.0 ) ).rgb;
           soft /= 5.0;
           // vignette: mirror silvering darkens off-centre
-          vec2 vc = vUv - 0.5;
+          vec2 vc = vUv.xy / max( vUv.w, 0.0001 ) - 0.5;
           float vig = 1.0 - smoothstep( 0.18, 0.62, length( vec2( vc.x * 0.85, vc.y * 1.05 ) ) ) * 0.30;
-          // Lift contrast: a pale room washed out to a flat wash in the first
-          // pass, and a mirror with no contrast stops reading as glass.
+          // Lift contrast: a pale room washes out to a flat field without it.
           soft = clamp( ( soft - 0.5 ) * 1.42 + 0.5, 0.0, 1.0 );
           gl_FragColor = vec4( soft * vig, 0.97 );
           `,
